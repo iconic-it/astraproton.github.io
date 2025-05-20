@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTRA - Cyber Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <div class="logo-container">
+        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+LEFT" class="logo left" id="logo-left" alt="Left Logo">
+        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+RIGHT" class="logo right" id="logo-right" alt="Right Logo">
+    </div>
+    
+    <div class="hologram-container" id="container">
+        <div class="interface-panel">
+            <div class="system-title">ASTRA AI</div>
+            <div class="wake-hint" id="wake-hint">Say "ACTIVATE" to begin</div>
+            
+            <div class="status-container">
+                <div class="status" id="status">SYSTEM STANDBY</div>
+            </div>
+            
+            <div class="hologram-circle circle-1"></div>
+            <div class="hologram-circle circle-2"></div>
+            <div class="hologram-circle circle-3"></div>
+            
+            <div class="hologram-core" id="core"></div>
+            
+            <img src="" class="album-art" id="album-art" alt="Album Art">
+            
+            <div class="controls-container">
+                <div class="response-display" id="response">
+                    Initializing system...
+                </div>
+                <button class="cyber-btn" id="mic-btn">
+                    <span class="btn-content">
+                        <span class="btn-text">INITIALIZE SYSTEM</span>
+                        <span class="btn-glitch"></span>
+                        <span class="btn-dots"></span>
+                    </span>
+                </button>
+                <button class="cyber-btn interrupt" id="interrupt-btn" style="display: none;">
+                    <span class="btn-content">
+                        <span class="btn-text">INTERRUPT</span>
+                        <span class="btn-glitch"></span>
+                        <span class="btn-dots"></span>
+                    </span>
+                </button>
+            </div>
+            
+            <div class="permission-error" id="permission-error">
+                Microphone permission denied. Please allow microphone access in your browser settings.
+            </div>
+        </div>
+        
+        <div class="permission-prompt" id="permission-prompt">
+            <h3>Microphone Access Required</h3>
+            <p>ASTRA needs microphone permission to respond to voice commands. Your audio data is processed locally and not stored.</p>
+            <div>
+                <button class="cyber-btn secondary" id="deny-btn">
+                    <span class="btn-content">
+                        <span class="btn-text">DENY</span>
+                        <span class="btn-glitch"></span>
+                        <span class="btn-dots"></span>
+                    </span>
+                </button>
+                <button class="cyber-btn primary" id="allow-btn">
+                    <span class="btn-content">
+                        <span class="btn-text">ALLOW</span>
+                        <span class="btn-glitch"></span>
+                        <span class="btn-dots"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="song-player" id="song-player">
+            <button class="close-player" id="close-player">✕</button>
+            <h3>SELECT A SONG</h3>
+            <div class="song-list" id="song-list">
+                <!-- Songs will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
