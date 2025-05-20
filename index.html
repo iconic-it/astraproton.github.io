@@ -5,14 +5,653 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTRA - Cyber Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #00f7ff;
+            --secondary: #7700ff;
+            --accent: #00ff88;
+            --bg-dark: #0a0a12;
+            --text-glow: 0 0 10px currentColor;
+            --error: #ff1b4d;
+            --success: #00ff88;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            overflow: hidden;
+            font-family: 'Orbitron', 'Rajdhani', sans-serif;
+            color: var(--primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                linear-gradient(rgba(0, 247, 255, 0.03) 0%, transparent 50%),
+                linear-gradient(rgba(119, 0, 255, 0.03) 100%),
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(0, 247, 255, 0.1) 0%, transparent 25%);
+        }
+
+        /* Logo Container Styles */
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-sizing: border-box;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 5px var(--primary));
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        .hologram-container {
+            position: relative;
+            width: 80vmin;
+            height: 80vmin;
+            max-width: 600px;
+            max-height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hologram-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            mix-blend-mode: screen;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        .circle-1 {
+            width: 100%;
+            height: 100%;
+            border-color: var(--primary);
+            animation: rotate 60s infinite, pulse-opacity 8s infinite;
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.3);
+        }
+
+        .circle-2 {
+            width: 80%;
+            height: 80%;
+            border-color: var(--secondary);
+            animation: rotate-reverse 45s infinite, pulse-opacity 12s infinite 2s;
+            box-shadow: 0 0 30px rgba(119, 0, 255, 0.3);
+        }
+
+        .circle-3 {
+            width: 60%;
+            height: 60%;
+            border-color: var(--accent);
+            animation: rotate 30s infinite, pulse-opacity 15s infinite 4s;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .hologram-core {
+            position: relative;
+            width: 40%;
+            height: 40%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.2) 0%, transparent 70%);
+            z-index: 10;
+            transition: all 0.3s ease;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+        }
+
+        .voice-active .hologram-core {
+            background: radial-gradient(circle, rgba(0, 247, 255, 0.4) 0%, transparent 70%);
+            box-shadow: 0 0 50px rgba(0, 247, 255, 0.4);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .interface-panel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .status-container {
+            position: absolute;
+            top: 5%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            background: rgba(10, 10, 18, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+            transition: all 0.3s ease;
+            text-shadow: var(--text-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 247, 255, 0.2) 50%, 
+                transparent 100%);
+            animation: statusShine 3s infinite;
+            opacity: 0;
+        }
+
+        .status.processing::after {
+            opacity: 1;
+        }
+
+        .status.error {
+            border-color: var(--error);
+            color: var(--error);
+            box-shadow: 0 0 10px rgba(255, 27, 77, 0.3);
+            text-shadow: 0 0 10px var(--error);
+        }
+
+        .status.active {
+            border-color: var(--success);
+            color: var(--success);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            text-shadow: 0 0 10px var(--success);
+        }
+
+        .controls-container {
+            position: absolute;
+            bottom: 5%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Updated Cyber Button Styles */
+        .cyber-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.8rem 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 20;
+            opacity: 0.9;
+            pointer-events: auto;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            outline: none;
+            text-shadow: var(--text-glow);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-align: center;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            box-shadow: 0 0 0 1px rgba(0, 247, 255, 0.3),
+                        inset 0 0 0 1px rgba(0, 247, 255, 0.3);
+        }
+
+        .cyber-btn .btn-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cyber-btn .btn-text {
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .cyber-btn .btn-glitch {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                transparent 45%,
+                rgba(0, 247, 255, 0.3) 50%,
+                transparent 55%
+            );
+            transform: translateX(-100%) rotate(30deg);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .cyber-btn .btn-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, var(--primary) 1px, transparent 2px),
+                radial-gradient(circle at 80% 50%, var(--primary) 1px, transparent 2px);
+            background-size: 10px 10px;
+            opacity: 0.3;
+        }
+
+        .cyber-btn:hover .btn-glitch {
+            animation: buttonShine 1.5s infinite;
+            opacity: 1;
+        }
+
+        .cyber-btn:hover {
+            opacity: 1;
+            background: rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3),
+                        0 0 0 1px rgba(0, 247, 255, 0.5),
+                        inset 0 0 0 1px rgba(0, 247, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .cyber-btn.active {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            box-shadow: 0 0 15px rgba(119, 0, 255, 0.3),
+                        0 0 0 1px rgba(119, 0, 255, 0.5),
+                        inset 0 0 0 1px rgba(119, 0, 255, 0.5);
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        .cyber-btn.error {
+            border-color: var(--error);
+            color: var(--error);
+            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3),
+                        0 0 0 1px rgba(255, 27, 77, 0.5),
+                        inset 0 0 0 1px rgba(255, 27, 77, 0.5);
+            text-shadow: 0 0 10px var(--error);
+        }
+
+        .cyber-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .cyber-btn.primary {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.3),
+                        inset 0 0 0 1px rgba(0, 255, 136, 0.3);
+        }
+
+        .cyber-btn.primary:hover {
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3),
+                        0 0 0 1px rgba(0, 255, 136, 0.5),
+                        inset 0 0 0 1px rgba(0, 255, 136, 0.5);
+        }
+
+        .cyber-btn.secondary {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: rgba(119, 0, 255, 0.1);
+            box-shadow: 0 0 0 1px rgba(119, 0, 255, 0.3),
+                        inset 0 0 0 1px rgba(119, 0, 255, 0.3);
+        }
+
+        .cyber-btn.secondary:hover {
+            background: rgba(119, 0, 255, 0.2);
+            box-shadow: 0 0 15px rgba(119, 0, 255, 0.3),
+                        0 0 0 1px rgba(119, 0, 255, 0.5),
+                        inset 0 0 0 1px rgba(119, 0, 255, 0.5);
+        }
+
+        .cyber-btn.interrupt {
+            border-color: var(--error);
+            color: var(--error);
+            background: rgba(255, 27, 77, 0.1);
+            box-shadow: 0 0 0 1px rgba(255, 27, 77, 0.3),
+                        inset 0 0 0 1px rgba(255, 27, 77, 0.3);
+        }
+
+        .cyber-btn.interrupt:hover {
+            background: rgba(255, 27, 77, 0.2);
+            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3),
+                        0 0 0 1px rgba(255, 27, 77, 0.5),
+                        inset 0 0 0 1px rgba(255, 27, 77, 0.5);
+        }
+
+        .response-display {
+            width: 85%;
+            min-height: 4em;
+            background: rgba(10, 10, 18, 0.7);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--secondary);
+            box-shadow: 0 0 15px rgba(119, 0, 255, 0.2);
+            overflow: hidden;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .permission-error {
+            color: var(--error);
+            position: absolute;
+            bottom: 20%;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            display: none;
+            background: rgba(10, 10, 18, 0.9);
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid var(--error);
+            pointer-events: none;
+            animation: fadeInOut 5s ease-in-out;
+            text-shadow: 0 0 5px var(--error);
+        }
+
+        .system-title {
+            position: absolute;
+            top: 15%;
+            width: 100%;
+            text-align: center;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary);
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .wake-hint {
+            position: absolute;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--secondary);
+            animation: pulse-opacity 3s infinite;
+        }
+
+        .cyber-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 247, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 247, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .permission-prompt {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 18, 0.95);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 20px rgba(119, 0, 255, 0.5);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .permission-prompt h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .permission-prompt p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+
+        .song-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 18, 0.95);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(119, 0, 255, 0.5);
+            width: 80%;
+            max-width: 500px;
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 200;
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .song-player h3 {
+            margin-top: 0;
+            color: var(--primary);
+            text-align: center;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .song-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .song-item {
+            padding: 0.8rem;
+            background: rgba(119, 0, 255, 0.1);
+            border: 1px solid rgba(119, 0, 255, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            color: var(--secondary);
+        }
+
+        .song-item:hover {
+            background: rgba(119, 0, 255, 0.3);
+            border-color: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        .album-art {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 30%;
+            height: auto;
+            max-width: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            z-index: 15;
+            opacity: 0;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 30px rgba(119, 0, 255, 0.5);
+            pointer-events: none;
+        }
+
+        .album-art.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .album-art.spinning {
+            animation: spin 10s linear infinite;
+        }
+
+        .close-player {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes rotate-reverse {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg); }
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes statusShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes buttonShine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 5px currentColor; }
+            50% { text-shadow: 0 0 15px currentColor; }
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                height: 35px;
+            }
+            
+            .hologram-container {
+                width: 95vmin;
+                height: 95vmin;
+            }
+            
+            .system-title {
+                font-size: 1.8rem;
+                top: 12%;
+            }
+            
+            .wake-hint {
+                top: 22%;
+                font-size: 0.8rem;
+            }
+            
+            .response-display {
+                width: 90%;
+                font-size: 0.85rem;
+                min-height: 3.5em;
+            }
+            
+            .cyber-btn {
+                min-width: 180px;
+                height: auto;
+                font-size: 0.9rem;
+                padding: 0.7rem 1.3rem;
+            }
+            
+            .permission-prompt {
+                width: 90%;
+                padding: 1rem;
+            }
+            
+            .song-player {
+                width: 90%;
+                padding: 1rem;
+            }
+            
+            .album-art {
+                width: 40%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="cyber-grid"></div>
     
     <div class="logo-container">
-        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+LEFT" class="logo left" id="logo-left" alt="Left Logo">
-        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+RIGHT" class="logo right" id="logo-right" alt="Right Logo">
+        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=ASTRA" class="logo left" id="logo-left" alt="Left Logo">
+        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=AI" class="logo right" id="logo-right" alt="Right Logo">
     </div>
     
     <div class="hologram-container" id="container">
@@ -87,6 +726,546 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const GROQ_API_KEY = "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";
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+        const GROQ_MODEL = "llama3-70b-8192";
+
+        const systemState = {
+            isActive: false,
+            isProcessing: false,
+            isSpeaking: false,
+            isMusicPlaying: false,
+            permissionGranted: false,
+            initialized: false,
+            currentSong: null,
+            apiRetryCount: 0,
+            maxApiRetries: 3,
+            recognitionActive: false,
+            lastRecognitionError: null,
+            abortController: null,
+            speechSynthesisUtterance: null,
+            recognition: null,
+            isResponding: false
+        };
+
+        let conversationHistory = [
+            {
+                role: "system",
+                content: `You are ASTRA, an advanced AI assistant. Follow these rules strictly:
+                1. Respond concisely (25-30 words max unless more is requested)
+                2. Provide only factual, verified information
+                3. Never generate code or fictional data
+                4. Avoid religion and politics completely
+                5. Maintain professional, neutral tone
+                6. Remember previous conversation context
+                7. If asked about restricted topics, reply: "I don't discuss that topic"
+                8. Speak in a clear, male voice`
+            }
+        ];
+
+        // DOM Elements
+        const container = document.getElementById('container');
+        const core = document.getElementById('core');
+        const responseEl = document.getElementById('response');
+        const statusEl = document.getElementById('status');
+        const micBtn = document.getElementById('mic-btn');
+        const interruptBtn = document.getElementById('interrupt-btn');
+        const permissionError = document.getElementById('permission-error');
+        const wakeHint = document.getElementById('wake-hint');
+        const permissionPrompt = document.getElementById('permission-prompt');
+        const allowBtn = document.getElementById('allow-btn');
+        const denyBtn = document.getElementById('deny-btn');
+        const songPlayer = document.getElementById('song-player');
+        const songList = document.getElementById('song-list');
+        const closePlayer = document.getElementById('close-player');
+        const albumArt = document.getElementById('album-art');
+        const logoLeft = document.getElementById('logo-left');
+        const logoRight = document.getElementById('logo-right');
+
+        const audioPlayer = new Audio();
+        const isSpeechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+
+        const songs = [
+            { title: "Cosmic Pulse", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", image: "disc.png" },
+            { title: "Quantum Echo", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", image: "disc.png" },
+            { title: "Stellar Wind", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", image: "disc.png" },
+            { title: "Digital Mirage", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", image: "disc.png" },
+            { title: "Lunar Tide", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", image: "disc.png" }
+        ];
+
+        function updateStatus(text, isError = false, isProcessing = false) {
+            statusEl.textContent = text;
+            statusEl.className = 'status';
+            
+            if (isError) {
+                statusEl.classList.add('error');
+            } else if (isProcessing) {
+                statusEl.classList.add('processing');
+            } else if (text === "ACTIVE" || text === "SYSTEM READY") {
+                statusEl.classList.add('active');
+            }
+        }
+
+        function updateResponse(text) {
+            responseEl.textContent = text;
+            responseEl.style.borderColor = "var(--secondary)";
+            setTimeout(() => {
+                responseEl.style.borderColor = "var(--accent)";
+            }, 500);
+        }
+
+        function showPermissionPrompt() {
+            permissionPrompt.style.display = 'block';
+        }
+
+        function hidePermissionPrompt() {
+            permissionPrompt.style.display = 'none';
+        }
+
+        function hideSongPlayer() {
+            songPlayer.style.display = 'none';
+        }
+
+        function initializeSystem() {
+            if (!systemState.initialized) {
+                if (!isSpeechSupported) {
+                    updateStatus("UNSUPPORTED", true);
+                    updateResponse("Voice commands not supported in this browser");
+                    return;
+                }
+                
+                // Check if we already have permission
+                if (systemState.permissionGranted) {
+                    initializeVoiceRecognition();
+                    systemState.initialized = true;
+                    micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
+                    updateStatus("READY");
+                    updateResponse("System ready. Say 'ACTIVATE' to begin.");
+                    wakeHint.style.display = 'block';
+                    return;
+                }
+                
+                // Request permission through the browser's native prompt
+                navigator.permissions.query({name: 'microphone'}).then(permissionStatus => {
+                    if (permissionStatus.state === 'granted') {
+                        systemState.permissionGranted = true;
+                        initializeVoiceRecognition();
+                        systemState.initialized = true;
+                        micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
+                        updateStatus("READY");
+                        updateResponse("System ready. Say 'ACTIVATE' to begin.");
+                        wakeHint.style.display = 'block';
+                    } else {
+                        // Show our custom prompt if not granted
+                        showPermissionPrompt();
+                    }
+                }).catch(() => {
+                    // Fallback if permissions API isn't supported
+                    showPermissionPrompt();
+                });
+            } else {
+                toggleActivation();
+            }
+        }
+
+        function toggleActivation() {
+            systemState.isActive = !systemState.isActive;
+            
+            if (systemState.isActive) {
+                container.classList.add('voice-active');
+                micBtn.classList.add('active');
+                micBtn.querySelector('.btn-text').textContent = "DEACTIVATE";
+                updateStatus("ACTIVE");
+                updateResponse("System active. Listening for commands...");
+                if (systemState.recognition) {
+                    systemState.recognition.start();
+                }
+            } else {
+                container.classList.remove('voice-active');
+                micBtn.classList.remove('active');
+                micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
+                updateStatus("READY");
+                updateResponse("System standby. Say 'ACTIVATE' to begin.");
+                if (systemState.recognition) {
+                    systemState.recognition.stop();
+                }
+            }
+        }
+
+        function requestMicrophonePermission() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    systemState.permissionGranted = true;
+                    localStorage.setItem('microphonePermission', 'granted');
+                    updateStatus("READY");
+                    micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
+                    micBtn.classList.remove('error');
+                    
+                    initializeVoiceRecognition();
+                    systemState.initialized = true;
+                    updateResponse("System ready. Say 'ACTIVATE' to begin.");
+                    wakeHint.style.display = 'block';
+                    hidePermissionPrompt();
+                })
+                .catch(error => {
+                    console.error("Microphone error:", error);
+                    permissionError.style.display = 'block';
+                    setTimeout(() => permissionError.style.display = 'none', 5000);
+                    micBtn.querySelector('.btn-text').textContent = "ALLOW MICROPHONE";
+                    micBtn.classList.add('error');
+                    
+                    if (error.name === 'NotAllowedError') {
+                        updateResponse("Microphone access was denied");
+                        updateStatus("PERMISSION DENIED", true);
+                    } else {
+                        updateResponse("Microphone access error");
+                        updateStatus("MIC ERROR", true);
+                    }
+                });
+        }
+
+        function initializeVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            systemState.recognition = new SpeechRecognition();
+            systemState.recognition.continuous = true;
+            systemState.recognition.interimResults = true;
+            
+            systemState.recognition.onstart = () => {
+                systemState.recognitionActive = true;
+                updateStatus("LISTENING", false, true);
+            };
+            
+            systemState.recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                
+                if (finalTranscript && !systemState.isResponding) {
+                    handleVoiceCommand(finalTranscript);
+                }
+            };
+            
+            systemState.recognition.onerror = (event) => {
+                systemState.lastRecognitionError = event.error;
+                updateStatus("RECOGNITION ERROR", true);
+            };
+            
+            systemState.recognition.onend = () => {
+                systemState.recognitionActive = false;
+                if (systemState.isActive) {
+                    setTimeout(() => {
+                        if (!systemState.recognitionActive) {
+                            systemState.recognition.start();
+                        }
+                    }, 500);
+                }
+            };
+        }
+
+        async function handleVoiceCommand(command) {
+            if (!command || systemState.isSpeaking || systemState.isProcessing || systemState.isResponding) return;
+            
+            command = command.trim().toLowerCase();
+            
+            // Handle activation command
+            if (command.includes('activate') && !systemState.isActive) {
+                toggleActivation();
+                return;
+            }
+            
+            // Handle deactivation command
+            if ((command.includes('deactivate') || command.includes('standby')) {
+                if (systemState.isActive) {
+                    toggleActivation();
+                }
+                return;
+            }
+            
+            // Only process commands when active
+            if (!systemState.isActive) return;
+            
+            // Handle music commands
+            if (command.includes('play music') || command.includes('play song')) {
+                showSongPlayer();
+                return;
+            }
+            
+            if (command.includes('stop music') || command.includes('pause music')) {
+                if (systemState.isMusicPlaying) {
+                    interruptAll();
+                    updateResponse("Music stopped");
+                }
+                return;
+            }
+            
+            // Process other commands through AI
+            systemState.isResponding = true;
+            systemState.isProcessing = true;
+            try {
+                const response = await queryAI(command);
+                updateResponse(response);
+                await speak(response);
+            } catch (error) {
+                console.error("Command handling error:", error);
+                updateResponse("Error processing command");
+                updateStatus("ERROR", true);
+            } finally {
+                systemState.isProcessing = false;
+                systemState.isResponding = false;
+            }
+        }
+
+        function showSongPlayer() {
+            songList.innerHTML = '';
+            songs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.textContent = song.title;
+                songItem.addEventListener('click', () => {
+                    playSong(song);
+                    hideSongPlayer();
+                });
+                songList.appendChild(songItem);
+            });
+            
+            songPlayer.style.display = 'block';
+        }
+
+        async function queryAI(prompt) {
+            if (!prompt) return "Invalid input";
+            
+            systemState.abortController = new AbortController();
+            updateStatus("PROCESSING", false, true);
+            updateResponse("Processing request...");
+            conversationHistory.push({ role: "user", content: prompt });
+
+            if (prompt.toLowerCase().includes('bafsk')) {
+                return "BAF Shaheen College Kurmitola is a prestigious educational institution in Bangladesh.";
+            }
+
+            try {
+                const timeout = setTimeout(() => systemState.abortController.abort(), 10000);
+                
+                let response;
+                for (let attempt = 0; attempt < systemState.maxApiRetries; attempt++) {
+                    try {
+                        response = await fetch(GROQ_API_URL, {
+                            method: "POST",
+                            headers: {
+                                "Authorization": Bearer ${GROQ_API_KEY},
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                model: GROQ_MODEL,
+                                messages: conversationHistory,
+                                temperature: 0.3,
+                                max_tokens: 1000
+                            }),
+                            signal: systemState.abortController.signal
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.error?.message || API error ${response.status});
+                        }
+
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType?.includes('application/json')) {
+                            throw new Error("Invalid response format");
+                        }
+
+                        const data = await response.json();
+                        const aiResponse = data.choices[0].message.content.trim();
+                        conversationHistory.push({ role: "assistant", content: aiResponse });
+                        if (conversationHistory.length > 6) {
+                            conversationHistory = conversationHistory.slice(-6);
+                        }
+                        
+                        return aiResponse;
+                    } catch (error) {
+                        if (attempt === systemState.maxApiRetries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                    } finally {
+                        clearTimeout(timeout);
+                    }
+                }
+            } catch (error) {
+                console.error("AI Error:", error);
+                return error.name === 'AbortError' ? "Request interrupted" : System error: ${error.message}. Please try again.;
+            }
+        }
+
+        function speak(text) {
+            return new Promise((resolve) => {
+                if (!text || systemState.isSpeaking) return resolve();
+                
+                systemState.isSpeaking = true;
+                updateStatus("SPEAKING", false, true);
+                interruptBtn.style.display = 'block';
+                
+                window.speechSynthesis.cancel();
+                
+                // Wait for voices to be loaded
+                const getVoices = () => {
+                    const voices = speechSynthesis.getVoices();
+                    if (voices.length) {
+                        return voices;
+                    }
+                    return new Promise(resolve => {
+                        speechSynthesis.onvoiceschanged = () => resolve(speechSynthesis.getVoices());
+                    });
+                };
+                
+                getVoices().then(voices => {
+                    systemState.speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
+                    
+                    // Find a male voice or use default
+                    const maleVoice = voices.find(v => v.name.includes('Male') || v.name.includes('male'));
+                    if (maleVoice) {
+                        systemState.speechSynthesisUtterance.voice = maleVoice;
+                    }
+                    
+                    systemState.speechSynthesisUtterance.rate = 0.9;
+                    systemState.speechSynthesisUtterance.pitch = 0.8;
+                    
+                    systemState.speechSynthesisUtterance.onend = () => {
+                        systemState.isSpeaking = false;
+                        systemState.speechSynthesisUtterance = null;
+                        updateStatus(systemState.isActive ? "ACTIVE" : "READY");
+                        interruptBtn.style.display = 'none';
+                        resolve();
+                    };
+                    
+                    systemState.speechSynthesisUtterance.onerror = (e) => {
+                        console.error("Speech error:", e);
+                        systemState.isSpeaking = false;
+                        systemState.speechSynthesisUtterance = null;
+                        updateStatus(systemState.isActive ? "ACTIVE" : "READY");
+                        interruptBtn.style.display = 'none';
+                        resolve();
+                    };
+                    
+                    window.speechSynthesis.speak(systemState.speechSynthesisUtterance);
+                });
+            });
+        }
+
+        function interruptAll() {
+            if (systemState.isSpeaking && systemState.speechSynthesisUtterance) {
+                window.speechSynthesis.cancel();
+                systemState.isSpeaking = false;
+                systemState.speechSynthesisUtterance = null;
+            }
+            
+            if (systemState.isProcessing && systemState.abortController) {
+                systemState.abortController.abort();
+                systemState.isProcessing = false;
+                systemState.abortController = null;
+            }
+            
+            if (systemState.isMusicPlaying) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                systemState.isMusicPlaying = false;
+                albumArt.classList.remove('visible', 'spinning');
+            }
+            
+            if (systemState.recognition && systemState.recognitionActive) {
+                systemState.recognition.stop();
+            }
+            
+            systemState.isResponding = false;
+            updateStatus(systemState.isActive ? "ACTIVE" : "READY");
+            interruptBtn.style.display = 'none';
+            
+            if (systemState.isProcessing || systemState.isSpeaking) {
+                updateResponse("Operation interrupted");
+            }
+        }
+
+        function playSong(song) {
+            interruptAll();
+            
+            systemState.currentSong = song;
+            systemState.isMusicPlaying = true;
+            
+            audioPlayer.src = song.audio;
+            albumArt.onload = () => {
+                albumArt.classList.add('visible', 'spinning');
+            };
+            albumArt.src = song.image || 'disc.png';
+            audioPlayer.play().then(() => {
+                updateStatus("PLAYING MUSIC");
+                updateResponse(Now playing: ${song.title});
+                interruptBtn.style.display = 'block';
+            }).catch(e => {
+                console.error("Playback error:", e);
+                systemState.isMusicPlaying = false;
+                albumArt.classList.remove('visible', 'spinning');
+                updateStatus("PLAYBACK ERROR", true);
+                updateResponse(Could not play: ${song.title});
+            });
+            
+            audioPlayer.onended = () => {
+                systemState.isMusicPlaying = false;
+                albumArt.classList.remove('visible', 'spinning');
+                updateStatus(systemState.isActive ? "ACTIVE" : "READY");
+                interruptBtn.style.display = 'none';
+            };
+        }
+
+        // Event Listeners
+        micBtn.addEventListener('click', initializeSystem);
+        interruptBtn.addEventListener('click', interruptAll);
+        allowBtn.addEventListener('click', () => {
+            hidePermissionPrompt();
+            requestMicrophonePermission();
+        });
+        denyBtn.addEventListener('click', () => {
+            hidePermissionPrompt();
+            updateStatus("PERMISSION REQUIRED", true);
+            updateResponse("Microphone access is required");
+            micBtn.querySelector('.btn-text').textContent = "ALLOW MICROPHONE";
+            micBtn.classList.add('error');
+            micBtn.disabled = false;
+        });
+
+        closePlayer.addEventListener('click', hideSongPlayer);
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                updateStatus("SYSTEM STANDBY");
+                
+                // Check speech support and update UI accordingly
+                if (!isSpeechSupported) {
+                    updateResponse("Voice commands not supported in this browser");
+                    micBtn.disabled = true;
+                    return;
+                }
+                
+                wakeHint.style.display = 'none';
+                
+                // Check for existing permission
+                if (localStorage.getItem('microphonePermission') === 'granted') {
+                    systemState.permissionGranted = true;
+                    updateResponse("Click button to initialize system");
+                } else {
+                    updateResponse("Microphone access required - click to allow");
+                }
+            } catch (error) {
+                console.error("Startup failed:", error);
+                updateStatus("STARTUP ERROR", true);
+                updateResponse("System initialization failed");
+                micBtn.disabled = true;
+            }
+        });
+    </script>
 </body>
 </html>
