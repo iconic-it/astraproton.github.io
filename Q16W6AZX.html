@@ -832,6 +832,7 @@
                 if (!isSpeechSupported) {
                     updateStatus("UNSUPPORTED", true);
                     updateResponse("Voice commands not supported in this browser");
+                    micBtn.disabled = true;
                     return;
                 }
                 
@@ -847,23 +848,28 @@
                 }
                 
                 // Request permission through the browser's native prompt
-                navigator.permissions.query({name: 'microphone'}).then(permissionStatus => {
-                    if (permissionStatus.state === 'granted') {
-                        systemState.permissionGranted = true;
-                        initializeVoiceRecognition();
-                        systemState.initialized = true;
-                        micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
-                        updateStatus("READY");
-                        updateResponse("System ready. Say 'ACTIVATE' to begin.");
-                        wakeHint.style.display = 'block';
-                    } else {
-                        // Show our custom prompt if not granted
+                if (navigator.permissions && navigator.permissions.query) {
+                    navigator.permissions.query({name: 'microphone'}).then(permissionStatus => {
+                        if (permissionStatus.state === 'granted') {
+                            systemState.permissionGranted = true;
+                            initializeVoiceRecognition();
+                            systemState.initialized = true;
+                            micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
+                            updateStatus("READY");
+                            updateResponse("System ready. Say 'ACTIVATE' to begin.");
+                            wakeHint.style.display = 'block';
+                        } else {
+                            // Show our custom prompt if not granted
+                            showPermissionPrompt();
+                        }
+                    }).catch(() => {
+                        // Fallback if permissions API isn't supported
                         showPermissionPrompt();
-                    }
-                }).catch(() => {
-                    // Fallback if permissions API isn't supported
+                    });
+                } else {
+                    // Fallback for browsers that don't support permissions API
                     showPermissionPrompt();
-                });
+                }
             } else {
                 toggleActivation();
             }
@@ -980,7 +986,7 @@
             }
             
             // Handle deactivation command
-            if ((command.includes('deactivate') || command.includes('standby')) {
+            if (command.includes('deactivate') || command.includes('standby')) {
                 if (systemState.isActive) {
                     toggleActivation();
                 }
