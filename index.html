@@ -202,12 +202,12 @@
             gap: 1rem;
         }
 
-        /* Updated Cyber Button Styles */
-        .cyber-btn {
+        .mic-btn {
             background: transparent;
             border: 1px solid var(--primary);
             color: var(--primary);
-            padding: 0.8rem 1.5rem;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             transition: all 0.3s;
@@ -223,141 +223,115 @@
             overflow: hidden;
             min-width: 200px;
             text-align: center;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            box-shadow: 0 0 0 1px rgba(0, 247, 255, 0.3),
-                        inset 0 0 0 1px rgba(0, 247, 255, 0.3);
         }
 
-        .cyber-btn .btn-content {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cyber-btn .btn-text {
-            position: relative;
-            z-index: 2;
-            transition: all 0.3s;
-        }
-
-        .cyber-btn .btn-glitch {
+        .mic-btn::before {
+            content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background: linear-gradient(
-                to right,
+                to bottom right,
                 transparent 45%,
-                rgba(0, 247, 255, 0.3) 50%,
+                rgba(0, 247, 255, 0.1) 50%,
                 transparent 55%
             );
-            transform: translateX(-100%) rotate(30deg);
+            transform: rotate(30deg);
+            transition: all 0.5s;
             opacity: 0;
-            transition: all 0.3s;
         }
 
-        .cyber-btn .btn-dots {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 50%, var(--primary) 1px, transparent 2px),
-                radial-gradient(circle at 80% 50%, var(--primary) 1px, transparent 2px);
-            background-size: 10px 10px;
-            opacity: 0.3;
-        }
-
-        .cyber-btn:hover .btn-glitch {
+        .mic-btn:hover::before {
             animation: buttonShine 1.5s infinite;
             opacity: 1;
         }
 
-        .cyber-btn:hover {
+        .mic-btn:hover {
             opacity: 1;
             background: rgba(0, 247, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3),
-                        0 0 0 1px rgba(0, 247, 255, 0.5),
-                        inset 0 0 0 1px rgba(0, 247, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
             transform: scale(1.05);
         }
 
-        .cyber-btn.active {
+        .mic-btn.active {
             border-color: var(--secondary);
             color: var(--secondary);
-            box-shadow: 0 0 15px rgba(119, 0, 255, 0.3),
-                        0 0 0 1px rgba(119, 0, 255, 0.5),
-                        inset 0 0 0 1px rgba(119, 0, 255, 0.5);
+            box-shadow: 0 0 15px rgba(119, 0, 255, 0.3);
             text-shadow: 0 0 10px var(--secondary);
         }
 
-        .cyber-btn.error {
+        .mic-btn.error {
             border-color: var(--error);
             color: var(--error);
-            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3),
-                        0 0 0 1px rgba(255, 27, 77, 0.5),
-                        inset 0 0 0 1px rgba(255, 27, 77, 0.5);
+            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3);
             text-shadow: 0 0 10px var(--error);
         }
 
-        .cyber-btn:disabled {
+        .mic-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
         }
 
-        .cyber-btn.primary {
-            border-color: var(--accent);
+        .pause-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
             color: var(--accent);
+            padding: 0.8rem 4rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 20;
+            opacity: 0.9;
+            pointer-events: auto;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            outline: none;
+            text-shadow: var(--text-glow);
+            position: relative;
+            overflow: hidden;
+            min-width: 250px;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .pause-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(0, 255, 136, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .pause-btn:hover::before {
+            animation: buttonShine 1.5s infinite;
+            opacity: 1;
+        }
+
+        .pause-btn:hover {
+            opacity: 1;
             background: rgba(0, 255, 136, 0.1);
-            box-shadow: 0 0 0 1px rgba(0, 255, 136, 0.3),
-                        inset 0 0 0 1px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            transform: scale(1.05);
         }
 
-        .cyber-btn.primary:hover {
-            background: rgba(0, 255, 136, 0.2);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3),
-                        0 0 0 1px rgba(0, 255, 136, 0.5),
-                        inset 0 0 0 1px rgba(0, 255, 136, 0.5);
-        }
-
-        .cyber-btn.secondary {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            background: rgba(119, 0, 255, 0.1);
-            box-shadow: 0 0 0 1px rgba(119, 0, 255, 0.3),
-                        inset 0 0 0 1px rgba(119, 0, 255, 0.3);
-        }
-
-        .cyber-btn.secondary:hover {
-            background: rgba(119, 0, 255, 0.2);
-            box-shadow: 0 0 15px rgba(119, 0, 255, 0.3),
-                        0 0 0 1px rgba(119, 0, 255, 0.5),
-                        inset 0 0 0 1px rgba(119, 0, 255, 0.5);
-        }
-
-        .cyber-btn.interrupt {
-            border-color: var(--error);
-            color: var(--error);
-            background: rgba(255, 27, 77, 0.1);
-            box-shadow: 0 0 0 1px rgba(255, 27, 77, 0.3),
-                        inset 0 0 0 1px rgba(255, 27, 77, 0.3);
-        }
-
-        .cyber-btn.interrupt:hover {
-            background: rgba(255, 27, 77, 0.2);
-            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3),
-                        0 0 0 1px rgba(255, 27, 77, 0.5),
-                        inset 0 0 0 1px rgba(255, 27, 77, 0.5);
+        .pause-btn.active {
+            background: rgba(0, 255, 136, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
         }
 
         .response-display {
@@ -379,6 +353,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* Hide response when music is playing */
+        .music-playing .response-display {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
         }
 
         .permission-error {
@@ -466,6 +447,59 @@
             margin-bottom: 1.5rem;
         }
 
+        .permission-btn {
+            background: rgba(0, 247, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .permission-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(0, 247, 255, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .permission-btn:hover::before {
+            animation: buttonShine 1.5s infinite;
+            opacity: 1;
+        }
+
+        .permission-btn:hover {
+            background: rgba(0, 247, 255, 0.2);
+        }
+
+        .permission-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .permission-btn.primary:hover {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        /* Song Player Styles */
         .song-player {
             position: absolute;
             top: 50%;
@@ -623,11 +657,15 @@
                 min-height: 3.5em;
             }
             
-            .cyber-btn {
-                min-width: 180px;
-                height: auto;
+            .mic-btn {
+                padding: 0.7rem 1.5rem;
                 font-size: 0.9rem;
-                padding: 0.7rem 1.3rem;
+                min-width: 180px;
+            }
+            
+            .pause-btn {
+                padding: 0.7rem 3rem;
+                min-width: 220px;
             }
             
             .permission-prompt {
@@ -649,9 +687,10 @@
 <body>
     <div class="cyber-grid"></div>
     
+    <!-- Logo Container -->
     <div class="logo-container">
-        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=ASTRA" class="logo left" id="logo-left" alt="Left Logo">
-        <img src="https://via.placeholder.com/150x50/0a0a12/00f7ff?text=AI" class="logo right" id="logo-right" alt="Right Logo">
+        <img src="" class="logo left" id="logo-left" alt="Left Logo">
+        <img src="" class="logo right" id="logo-right" alt="Right Logo">
     </div>
     
     <div class="hologram-container" id="container">
@@ -675,20 +714,8 @@
                 <div class="response-display" id="response">
                     Initializing system...
                 </div>
-                <button class="cyber-btn" id="mic-btn">
-                    <span class="btn-content">
-                        <span class="btn-text">INITIALIZE SYSTEM</span>
-                        <span class="btn-glitch"></span>
-                        <span class="btn-dots"></span>
-                    </span>
-                </button>
-                <button class="cyber-btn interrupt" id="interrupt-btn" style="display: none;">
-                    <span class="btn-content">
-                        <span class="btn-text">INTERRUPT</span>
-                        <span class="btn-glitch"></span>
-                        <span class="btn-dots"></span>
-                    </span>
-                </button>
+                <button class="mic-btn" id="mic-btn">INITIALIZE SYSTEM</button>
+                <button class="pause-btn" id="pause-btn">PAUSE MICROPHONE</button>
             </div>
             
             <div class="permission-error" id="permission-error">
@@ -700,20 +727,8 @@
             <h3>Microphone Access Required</h3>
             <p>ASTRA needs microphone permission to respond to voice commands. Your audio data is processed locally and not stored.</p>
             <div>
-                <button class="cyber-btn secondary" id="deny-btn">
-                    <span class="btn-content">
-                        <span class="btn-text">DENY</span>
-                        <span class="btn-glitch"></span>
-                        <span class="btn-dots"></span>
-                    </span>
-                </button>
-                <button class="cyber-btn primary" id="allow-btn">
-                    <span class="btn-content">
-                        <span class="btn-text">ALLOW</span>
-                        <span class="btn-glitch"></span>
-                        <span class="btn-dots"></span>
-                    </span>
-                </button>
+                <button class="permission-btn" id="deny-btn">DENY</button>
+                <button class="permission-btn primary" id="allow-btn">ALLOW</button>
             </div>
         </div>
         
@@ -727,28 +742,12 @@
     </div>
 
     <script>
+        // Groq API Configuration
         const GROQ_API_KEY = "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";
         const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
         const GROQ_MODEL = "llama3-70b-8192";
-
-        const systemState = {
-            isActive: false,
-            isProcessing: false,
-            isSpeaking: false,
-            isMusicPlaying: false,
-            permissionGranted: false,
-            initialized: false,
-            currentSong: null,
-            apiRetryCount: 0,
-            maxApiRetries: 3,
-            recognitionActive: false,
-            lastRecognitionError: null,
-            abortController: null,
-            speechSynthesisUtterance: null,
-            recognition: null,
-            isResponding: false
-        };
-
+        
+        // Conversation history
         let conversationHistory = [
             {
                 role: "system",
@@ -763,14 +762,14 @@
                 8. Speak in a clear, male voice`
             }
         ];
-
+        
         // DOM Elements
         const container = document.getElementById('container');
         const core = document.getElementById('core');
         const responseEl = document.getElementById('response');
         const statusEl = document.getElementById('status');
         const micBtn = document.getElementById('mic-btn');
-        const interruptBtn = document.getElementById('interrupt-btn');
+        const pauseBtn = document.getElementById('pause-btn');
         const permissionError = document.getElementById('permission-error');
         const wakeHint = document.getElementById('wake-hint');
         const permissionPrompt = document.getElementById('permission-prompt');
@@ -782,10 +781,14 @@
         const albumArt = document.getElementById('album-art');
         const logoLeft = document.getElementById('logo-left');
         const logoRight = document.getElementById('logo-right');
-
+        
+        // Audio player
         const audioPlayer = new Audio();
-        const isSpeechSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-
+        let currentSong = null;
+        let isMusicPlaying = false;
+        let isMicrophonePaused = false;
+        
+        // Song library
         const songs = [
             { title: "Cosmic Pulse", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", image: "disc.png" },
             { title: "Quantum Echo", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", image: "disc.png" },
@@ -793,10 +796,124 @@
             { title: "Digital Mirage", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", image: "disc.png" },
             { title: "Lunar Tide", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", image: "disc.png" }
         ];
-
+        
+        // Set organization logos (replace with your actual logo URLs)
+        logoLeft.src = "https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+LEFT";
+        logoRight.src = "https://via.placeholder.com/150x50/0a0a12/00f7ff?text=LOGO+RIGHT";
+        
+        // Populate song list
+        function populateSongList() {
+            songList.innerHTML = '';
+            songs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.textContent = song.title;
+                songItem.addEventListener('click', () => playSong(song));
+                songList.appendChild(songItem);
+            });
+        }
+        
+        // Play selected song
+        function playSong(song) {
+            if (currentSong === song.title) {
+                if (!audioPlayer.paused) {
+                    audioPlayer.pause();
+                    albumArt.classList.remove('spinning');
+                    albumArt.classList.remove('visible');
+                    updateResponse(`Paused: ${song.title}`);
+                    isMusicPlaying = false;
+                    container.classList.remove('music-playing');
+                    return;
+                } else {
+                    audioPlayer.play();
+                    albumArt.classList.add('visible');
+                    albumArt.classList.add('spinning');
+                    updateResponse(`Resumed: ${song.title}`);
+                    isMusicPlaying = true;
+                    container.classList.add('music-playing');
+                    return;
+                }
+            }
+            
+            currentSong = song.title;
+            audioPlayer.src = song.audio;
+            albumArt.src = song.image;
+            isMusicPlaying = true;
+            container.classList.add('music-playing');
+            
+            audioPlayer.play()
+                .then(() => {
+                    updateResponse(`Now playing: ${song.title}`);
+                    albumArt.classList.add('visible');
+                    setTimeout(() => {
+                        albumArt.classList.add('spinning');
+                    }, 300);
+                    
+                    // Close player if open
+                    songPlayer.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error("Error playing song:", error);
+                    updateResponse(`Error playing: ${song.title}`);
+                    currentSong = null;
+                    isMusicPlaying = false;
+                    container.classList.remove('music-playing');
+                });
+        }
+        
+        // Handle song end
+        audioPlayer.addEventListener('ended', () => {
+            albumArt.classList.remove('spinning');
+            setTimeout(() => {
+                albumArt.classList.remove('visible');
+            }, 1000);
+            currentSong = null;
+            isMusicPlaying = false;
+            container.classList.remove('music-playing');
+            updateResponse("Playback complete");
+        });
+        
+        // Check if speech recognition is available
+        const isSpeechSupported = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+        
+        if (!isSpeechSupported) {
+            responseEl.textContent = "Speech recognition not supported in your browser";
+            micBtn.disabled = true;
+            pauseBtn.disabled = true;
+            micBtn.textContent = "UNSUPPORTED";
+            micBtn.classList.add('error');
+            updateStatus("BROWSER INCOMPATIBLE", true);
+        }
+        
+        // Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        
+        if (isSpeechSupported) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+        }
+        
+        // Speech Synthesis
+        const synth = window.speechSynthesis;
+        let speechQueue = [];
+        let isSpeaking = false;
+        
+        // State
+        let isActive = false;
+        let isProcessing = false;
+        const wakeWord = "activate";
+        const standbyWord = "deactivate";
+        let permissionGranted = false;
+        let initialized = false;
+        let permissionRequested = false;
+        
+        // Functions
         function updateStatus(text, isError = false, isProcessing = false) {
             statusEl.textContent = text;
-            statusEl.className = 'status';
+            statusEl.className = 'status'; // Reset classes
             
             if (isError) {
                 statusEl.classList.add('error');
@@ -805,430 +922,436 @@
             } else if (text === "ACTIVE" || text === "SYSTEM READY") {
                 statusEl.classList.add('active');
             }
+            
+            if ((text === "LISTENING" || text === "AWAITING COMMAND") && !isError) {
+                statusEl.style.animation = "pulse-opacity 2s infinite";
+            } else {
+                statusEl.style.animation = "none";
+            }
         }
-
+        
         function updateResponse(text) {
             responseEl.textContent = text;
+            // Add border highlight animation
             responseEl.style.borderColor = "var(--secondary)";
             setTimeout(() => {
                 responseEl.style.borderColor = "var(--accent)";
             }, 500);
         }
-
+        
+        function showPermissionError() {
+            permissionError.style.display = 'block';
+            setTimeout(() => {
+                permissionError.style.display = 'none';
+            }, 5000);
+        }
+        
         function showPermissionPrompt() {
             permissionPrompt.style.display = 'block';
         }
-
+        
         function hidePermissionPrompt() {
             permissionPrompt.style.display = 'none';
         }
-
+        
+        function showSongPlayer() {
+            songPlayer.style.display = 'block';
+            populateSongList();
+        }
+        
         function hideSongPlayer() {
             songPlayer.style.display = 'none';
         }
-
-        function initializeSystem() {
-            if (!systemState.initialized) {
-                if (!isSpeechSupported) {
-                    updateStatus("UNSUPPORTED", true);
-                    updateResponse("Voice commands not supported in this browser");
-                    micBtn.disabled = true;
-                    return;
-                }
-                
-                // Check if we already have permission
-                if (systemState.permissionGranted) {
-                    initializeVoiceRecognition();
-                    systemState.initialized = true;
-                    micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
-                    updateStatus("READY");
-                    updateResponse("System ready. Say 'ACTIVATE' to begin.");
-                    wakeHint.style.display = 'block';
-                    return;
-                }
-                
-                // Request permission through the browser's native prompt
-                if (navigator.permissions && navigator.permissions.query) {
-                    navigator.permissions.query({name: 'microphone'}).then(permissionStatus => {
-                        if (permissionStatus.state === 'granted') {
-                            systemState.permissionGranted = true;
-                            initializeVoiceRecognition();
-                            systemState.initialized = true;
-                            micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
-                            updateStatus("READY");
-                            updateResponse("System ready. Say 'ACTIVATE' to begin.");
-                            wakeHint.style.display = 'block';
-                        } else {
-                            // Show our custom prompt if not granted
-                            showPermissionPrompt();
-                        }
-                    }).catch(() => {
-                        // Fallback if permissions API isn't supported
-                        showPermissionPrompt();
-                    });
-                } else {
-                    // Fallback for browsers that don't support permissions API
-                    showPermissionPrompt();
-                }
-            } else {
-                toggleActivation();
-            }
-        }
-
-        function toggleActivation() {
-            systemState.isActive = !systemState.isActive;
+        
+        function processSpeechQueue() {
+            if (speechQueue.length === 0 || isSpeaking || isMusicPlaying) return;
             
-            if (systemState.isActive) {
-                container.classList.add('voice-active');
-                micBtn.classList.add('active');
-                micBtn.querySelector('.btn-text').textContent = "DEACTIVATE";
-                updateStatus("ACTIVE");
-                updateResponse("System active. Listening for commands...");
-                if (systemState.recognition) {
-                    systemState.recognition.start();
-                }
-            } else {
+            isSpeaking = true;
+            const { text, onEnd } = speechQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 0.9;
+            utterance.volume = 1.0;
+            
+            // Find a suitable voice
+            const voices = synth.getVoices();
+            if (voices.length > 0) {
+                // Try to find a male voice first
+                const maleVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes('male') || 
+                    voice.name.toLowerCase().includes('man')
+                );
+                
+                utterance.voice = maleVoice || voices[0];
+            }
+            
+            container.classList.add('voice-active');
+            utterance.onend = () => {
                 container.classList.remove('voice-active');
-                micBtn.classList.remove('active');
-                micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
-                updateStatus("READY");
-                updateResponse("System standby. Say 'ACTIVATE' to begin.");
-                if (systemState.recognition) {
-                    systemState.recognition.stop();
-                }
-            }
-        }
-
-        function requestMicrophonePermission() {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    stream.getTracks().forEach(track => track.stop());
-                    
-                    systemState.permissionGranted = true;
-                    localStorage.setItem('microphonePermission', 'granted');
-                    updateStatus("READY");
-                    micBtn.querySelector('.btn-text').textContent = "ACTIVATE";
-                    micBtn.classList.remove('error');
-                    
-                    initializeVoiceRecognition();
-                    systemState.initialized = true;
-                    updateResponse("System ready. Say 'ACTIVATE' to begin.");
-                    wakeHint.style.display = 'block';
-                    hidePermissionPrompt();
-                })
-                .catch(error => {
-                    console.error("Microphone error:", error);
-                    permissionError.style.display = 'block';
-                    setTimeout(() => permissionError.style.display = 'none', 5000);
-                    micBtn.querySelector('.btn-text').textContent = "ALLOW MICROPHONE";
-                    micBtn.classList.add('error');
-                    
-                    if (error.name === 'NotAllowedError') {
-                        updateResponse("Microphone access was denied");
-                        updateStatus("PERMISSION DENIED", true);
-                    } else {
-                        updateResponse("Microphone access error");
-                        updateStatus("MIC ERROR", true);
-                    }
-                });
-        }
-
-        function initializeVoiceRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            systemState.recognition = new SpeechRecognition();
-            systemState.recognition.continuous = true;
-            systemState.recognition.interimResults = true;
-            
-            systemState.recognition.onstart = () => {
-                systemState.recognitionActive = true;
-                updateStatus("LISTENING", false, true);
-            };
-            
-            systemState.recognition.onresult = (event) => {
-                let finalTranscript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript;
-                    }
-                }
+                isSpeaking = false;
+                if (onEnd) onEnd();
+                processSpeechQueue();
                 
-                if (finalTranscript && !systemState.isResponding) {
-                    handleVoiceCommand(finalTranscript);
-                }
-            };
-            
-            systemState.recognition.onerror = (event) => {
-                systemState.lastRecognitionError = event.error;
-                updateStatus("RECOGNITION ERROR", true);
-            };
-            
-            systemState.recognition.onend = () => {
-                systemState.recognitionActive = false;
-                if (systemState.isActive) {
+                if (!isSpeaking && isActive && !isProcessing && !isMusicPlaying && !isMicrophonePaused) {
                     setTimeout(() => {
-                        if (!systemState.recognitionActive) {
-                            systemState.recognition.start();
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error("Error restarting recognition:", e);
                         }
-                    }, 500);
+                    }, 100);
                 }
             };
+            
+            utterance.onerror = (event) => {
+                console.error("Speech synthesis error:", event);
+                container.classList.remove('voice-active');
+                isSpeaking = false;
+                if (onEnd) onEnd();
+                processSpeechQueue();
+            };
+            
+            synth.speak(utterance);
         }
-
-        async function handleVoiceCommand(command) {
-            if (!command || systemState.isSpeaking || systemState.isProcessing || systemState.isResponding) return;
+        
+        function speak(text, onEnd) {
+            if (!text || typeof text !== 'string' || isMusicPlaying) return;
             
-            command = command.trim().toLowerCase();
-            
-            // Handle activation command
-            if (command.includes('activate') && !systemState.isActive) {
-                toggleActivation();
-                return;
-            }
-            
-            // Handle deactivation command
-            if (command.includes('deactivate') || command.includes('standby')) {
-                if (systemState.isActive) {
-                    toggleActivation();
-                }
-                return;
-            }
-            
-            // Only process commands when active
-            if (!systemState.isActive) return;
-            
-            // Handle music commands
-            if (command.includes('play music') || command.includes('play song')) {
-                showSongPlayer();
-                return;
-            }
-            
-            if (command.includes('stop music') || command.includes('pause music')) {
-                if (systemState.isMusicPlaying) {
-                    interruptAll();
-                    updateResponse("Music stopped");
-                }
-                return;
-            }
-            
-            // Process other commands through AI
-            systemState.isResponding = true;
-            systemState.isProcessing = true;
-            try {
-                const response = await queryAI(command);
-                updateResponse(response);
-                await speak(response);
-            } catch (error) {
-                console.error("Command handling error:", error);
-                updateResponse("Error processing command");
-                updateStatus("ERROR", true);
-            } finally {
-                systemState.isProcessing = false;
-                systemState.isResponding = false;
+            speechQueue.push({ text, onEnd });
+            if (!isSpeaking) {
+                processSpeechQueue();
             }
         }
-
-        function showSongPlayer() {
-            songList.innerHTML = '';
-            songs.forEach(song => {
-                const songItem = document.createElement('div');
-                songItem.className = 'song-item';
-                songItem.textContent = song.title;
-                songItem.addEventListener('click', () => {
-                    playSong(song);
-                    hideSongPlayer();
-                });
-                songList.appendChild(songItem);
-            });
+        
+        function shouldBlockResponse(prompt) {
+            const blockedTopics = [
+                'religion', 'god', 'allah', 'jesus', 'bible', 'quran',
+                'politics', 'democrat', 'republican', 'election', 'trump', 'biden',
+                'code', 'programming', 'script', 'function', 'algorithm'
+            ];
             
-            songPlayer.style.display = 'block';
+            return blockedTopics.some(topic => 
+                prompt.toLowerCase().includes(topic)
+            );
         }
-
+        
         async function queryAI(prompt) {
-            if (!prompt) return "Invalid input";
+            if (!prompt || typeof prompt !== 'string') return "Invalid input";
             
-            systemState.abortController = new AbortController();
             updateStatus("PROCESSING", false, true);
             updateResponse("Processing request...");
-            conversationHistory.push({ role: "user", content: prompt });
-
-            if (prompt.toLowerCase().includes('bafsk')) {
-                return "BAF Shaheen College Kurmitola is a prestigious educational institution in Bangladesh.";
-            }
+            
+            // Add user message to history
+            conversationHistory.push({
+                role: "user",
+                content: prompt
+            });
 
             try {
-                const timeout = setTimeout(() => systemState.abortController.abort(), 10000);
-                
-                let response;
-                for (let attempt = 0; attempt < systemState.maxApiRetries; attempt++) {
-                    try {
-                        response = await fetch(GROQ_API_URL, {
-                            method: "POST",
-                            headers: {
-                                "Authorization": Bearer ${GROQ_API_KEY},
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                model: GROQ_MODEL,
-                                messages: conversationHistory,
-                                temperature: 0.3,
-                                max_tokens: 1000
-                            }),
-                            signal: systemState.abortController.signal
-                        });
-
-                        if (!response.ok) {
-                            const errorData = await response.json().catch(() => ({}));
-                            throw new Error(errorData.error?.message || API error ${response.status});
-                        }
-
-                        const contentType = response.headers.get('content-type');
-                        if (!contentType?.includes('application/json')) {
-                            throw new Error("Invalid response format");
-                        }
-
-                        const data = await response.json();
-                        const aiResponse = data.choices[0].message.content.trim();
-                        conversationHistory.push({ role: "assistant", content: aiResponse });
-                        if (conversationHistory.length > 6) {
-                            conversationHistory = conversationHistory.slice(-6);
-                        }
-                        
-                        return aiResponse;
-                    } catch (error) {
-                        if (attempt === systemState.maxApiRetries - 1) throw error;
-                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
-                    } finally {
-                        clearTimeout(timeout);
-                    }
+                // Check for blocked topics
+                if (shouldBlockResponse(prompt)) {
+                    return "I don't discuss that topic.";
                 }
+
+                const response = await fetch(GROQ_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: GROQ_MODEL,
+                        messages: conversationHistory,
+                        temperature: 0.3,
+                        max_tokens: 100
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    if (response.status === 401) {
+                        throw new Error("Invalid API key");
+                    }
+                    throw new Error(errorData.error?.message || "API error");
+                }
+                
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content.trim();
+                
+                // Add AI response to history (keeping last 6 exchanges)
+                conversationHistory.push({
+                    role: "assistant",
+                    content: aiResponse
+                });
+                
+                if (conversationHistory.length > 6) {
+                    conversationHistory = conversationHistory.slice(-6);
+                }
+                
+                return aiResponse;
+
             } catch (error) {
                 console.error("AI Error:", error);
-                return error.name === 'AbortError' ? "Request interrupted" : System error: ${error.message}. Please try again.;
+                if (prompt.includes("hello") || prompt.includes("hi")) {
+                    return "Hello! I'm having temporary connection issues.";
+                }
+                if (prompt.includes("time")) {
+                    return `The current time is ${new Date().toLocaleTimeString()}`;
+                }
+                return `System error: ${error.message}. Please try again later.`;
             }
         }
-
-        function speak(text) {
-            return new Promise((resolve) => {
-                if (!text || systemState.isSpeaking) return resolve();
-                
-                systemState.isSpeaking = true;
-                updateStatus("SPEAKING", false, true);
-                interruptBtn.style.display = 'block';
-                
-                window.speechSynthesis.cancel();
-                
-                // Wait for voices to be loaded
-                const getVoices = () => {
-                    const voices = speechSynthesis.getVoices();
-                    if (voices.length) {
-                        return voices;
+        
+        function requestMicrophonePermission() {
+            updateStatus("REQUESTING PERMISSION", false, true);
+            updateResponse("Please allow microphone access...");
+            micBtn.disabled = true;
+            pauseBtn.disabled = false;
+            micBtn.textContent = "CHECKING...";
+            
+            // Show visual feedback
+            container.classList.add('voice-active');
+            
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    // Immediately stop using the stream (we just needed permission)
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    permissionGranted = true;
+                    initialized = true;
+                    
+                    micBtn.textContent = "SYSTEM READY";
+                    micBtn.classList.add('active');
+                    micBtn.disabled = true;
+                    
+                    updateStatus("STANDBY");
+                    updateResponse("Say 'ACTIVATE' to begin");
+                    wakeHint.style.display = 'block';
+                    
+                    // Start listening for wake word
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error("Error starting recognition:", e);
+                        updateStatus("STARTUP ERROR", true);
+                        updateResponse("Failed to start voice recognition");
+                        micBtn.textContent = "RETRY";
+                        micBtn.disabled = false;
                     }
-                    return new Promise(resolve => {
-                        speechSynthesis.onvoiceschanged = () => resolve(speechSynthesis.getVoices());
-                    });
-                };
-                
-                getVoices().then(voices => {
-                    systemState.speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
                     
-                    // Find a male voice or use default
-                    const maleVoice = voices.find(v => v.name.includes('Male') || v.name.includes('male'));
-                    if (maleVoice) {
-                        systemState.speechSynthesisUtterance.voice = maleVoice;
+                    container.classList.remove('voice-active');
+                })
+                .catch(error => {
+                    console.error("Microphone permission error:", error);
+                    permissionGranted = false;
+                    initialized = false;
+                    
+                    container.classList.remove('voice-active');
+                    
+                    if (error.name === 'NotAllowedError') {
+                        showPermissionError();
+                        updateStatus("PERMISSION DENIED", true);
+                        updateResponse("Microphone access required");
+                        micBtn.textContent = "ALLOW MICROPHONE";
+                        micBtn.classList.add('error');
+                    } else {
+                        updateStatus("MICROPHONE ERROR", true);
+                        updateResponse("Could not access microphone");
+                        micBtn.textContent = "TRY AGAIN";
+                        micBtn.classList.add('error');
                     }
                     
-                    systemState.speechSynthesisUtterance.rate = 0.9;
-                    systemState.speechSynthesisUtterance.pitch = 0.8;
-                    
-                    systemState.speechSynthesisUtterance.onend = () => {
-                        systemState.isSpeaking = false;
-                        systemState.speechSynthesisUtterance = null;
-                        updateStatus(systemState.isActive ? "ACTIVE" : "READY");
-                        interruptBtn.style.display = 'none';
-                        resolve();
-                    };
-                    
-                    systemState.speechSynthesisUtterance.onerror = (e) => {
-                        console.error("Speech error:", e);
-                        systemState.isSpeaking = false;
-                        systemState.speechSynthesisUtterance = null;
-                        updateStatus(systemState.isActive ? "ACTIVE" : "READY");
-                        interruptBtn.style.display = 'none';
-                        resolve();
-                    };
-                    
-                    window.speechSynthesis.speak(systemState.speechSynthesisUtterance);
+                    micBtn.disabled = false;
+                    pauseBtn.disabled = true;
                 });
-            });
         }
-
-        function interruptAll() {
-            if (systemState.isSpeaking && systemState.speechSynthesisUtterance) {
-                window.speechSynthesis.cancel();
-                systemState.isSpeaking = false;
-                systemState.speechSynthesisUtterance = null;
-            }
+        
+        function initializeSystem() {
+            if (permissionRequested || !isSpeechSupported) return;
             
-            if (systemState.isProcessing && systemState.abortController) {
-                systemState.abortController.abort();
-                systemState.isProcessing = false;
-                systemState.abortController = null;
-            }
+            permissionRequested = true;
             
-            if (systemState.isMusicPlaying) {
-                audioPlayer.pause();
-                audioPlayer.currentTime = 0;
-                systemState.isMusicPlaying = false;
-                albumArt.classList.remove('visible', 'spinning');
-            }
+            // Check if we already have permission
+            navigator.permissions && navigator.permissions.query({ name: 'microphone' })
+                .then(permissionStatus => {
+                    if (permissionStatus.state === 'granted') {
+                        requestMicrophonePermission();
+                    } else {
+                        // Show permission prompt
+                        showPermissionPrompt();
+                    }
+                })
+                .catch(() => {
+                    // Browser doesn't support permissions API, proceed directly
+                    showPermissionPrompt();
+                });
+        }
+        
+        function toggleMicrophone() {
+            if (!initialized) return;
             
-            if (systemState.recognition && systemState.recognitionActive) {
-                systemState.recognition.stop();
-            }
+            isMicrophonePaused = !isMicrophonePaused;
             
-            systemState.isResponding = false;
-            updateStatus(systemState.isActive ? "ACTIVE" : "READY");
-            interruptBtn.style.display = 'none';
-            
-            if (systemState.isProcessing || systemState.isSpeaking) {
-                updateResponse("Operation interrupted");
+            if (isMicrophonePaused) {
+                pauseBtn.textContent = "RESUME MICROPHONE";
+                pauseBtn.classList.add('active');
+                updateStatus("MICROPHONE PAUSED");
+                updateResponse("Microphone input paused");
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.error("Error stopping recognition:", e);
+                }
+            } else {
+                pauseBtn.textContent = "PAUSE MICROPHONE";
+                pauseBtn.classList.remove('active');
+                updateStatus(isActive ? "AWAITING COMMAND" : "STANDBY");
+                updateResponse(isActive ? "Microphone resumed" : "Say 'ACTIVATE' to begin");
+                if (!isProcessing && !isSpeaking) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error("Error starting recognition:", e);
+                    }
+                }
             }
         }
-
-        function playSong(song) {
-            interruptAll();
-            
-            systemState.currentSong = song;
-            systemState.isMusicPlaying = true;
-            
-            audioPlayer.src = song.audio;
-            albumArt.onload = () => {
-                albumArt.classList.add('visible', 'spinning');
+        
+        // Event Handlers
+        if (isSpeechSupported) {
+            recognition.onstart = () => {
+                if (!initialized || isMicrophonePaused) return;
+                
+                if (isActive && !isProcessing) {
+                    updateStatus("AWAITING COMMAND");
+                } else if (!isProcessing) {
+                    updateStatus("LISTENING FOR WAKE WORD");
+                }
+                
+                container.classList.add('voice-active');
+                core.style.transform = "translate(-50%, -50%) scale(1.1)";
             };
-            albumArt.src = song.image || 'disc.png';
-            audioPlayer.play().then(() => {
-                updateStatus("PLAYING MUSIC");
-                updateResponse(Now playing: ${song.title});
-                interruptBtn.style.display = 'block';
-            }).catch(e => {
-                console.error("Playback error:", e);
-                systemState.isMusicPlaying = false;
-                albumArt.classList.remove('visible', 'spinning');
-                updateStatus("PLAYBACK ERROR", true);
-                updateResponse(Could not play: ${song.title});
-            });
             
-            audioPlayer.onended = () => {
-                systemState.isMusicPlaying = false;
-                albumArt.classList.remove('visible', 'spinning');
-                updateStatus(systemState.isActive ? "ACTIVE" : "READY");
-                interruptBtn.style.display = 'none';
+            recognition.onend = () => {
+                container.classList.remove('voice-active');
+                core.style.transform = "translate(-50%, -50%) scale(1)";
+                
+                if (!isMicrophonePaused && isActive && initialized && !isProcessing && !isSpeaking && !isMusicPlaying) {
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error("Error restarting recognition:", e);
+                        }
+                    }, 100);
+                }
+            };
+            
+            recognition.onresult = async (event) => {
+                if (isProcessing || !event.results || event.results.length === 0 || isMicrophonePaused) return;
+                
+                const result = event.results[event.results.length - 1];
+                if (!result || result.length === 0) return;
+                
+                const transcript = result[0].transcript.toLowerCase().trim();
+                console.log("Detected speech:", transcript);
+                
+                if (!isActive) {
+                    if (transcript.includes(wakeWord)) {
+                        isActive = true;
+                        wakeHint.style.display = 'none';
+                        updateStatus("ACTIVE");
+                        updateResponse("Systems online");
+                        speak("Activated. How may I assist?", () => {
+                            isProcessing = false;
+                            updateStatus("AWAITING COMMAND");
+                        });
+                    }
+                } else {
+                    if (transcript.includes(standbyWord)) {
+                        isActive = false;
+                        updateResponse("System deactivated");
+                        updateStatus("STANDBY");
+                        wakeHint.style.display = 'block';
+                        speak("Deactivating. Goodbye.");
+                        return;
+                    }
+                    
+                    // Handle music commands
+                    if (transcript.includes("play music") || transcript.includes("open song player")) {
+                        if (isMusicPlaying) {
+                            updateResponse("Music player is already active");
+                            return;
+                        }
+                        showSongPlayer();
+                        speak("Opening song player.");
+                        return;
+                    }
+                    
+                    if (transcript.includes("stop music") || transcript.includes("end music") || transcript.includes("pause music")) {
+                        if (!isMusicPlaying) {
+                            updateResponse("No music is currently playing");
+                            return;
+                        }
+                        audioPlayer.pause();
+                        albumArt.classList.remove('spinning');
+                        albumArt.classList.remove('visible');
+                        updateResponse("Music stopped");
+                        isMusicPlaying = false;
+                        container.classList.remove('music-playing');
+                        speak("Music stopped.");
+                        return;
+                    }
+                    
+                    if (isMusicPlaying) {
+                        // Ignore other commands while music is playing
+                        return;
+                    }
+                    
+                    isProcessing = true;
+                    const aiResponse = await queryAI(transcript);
+                    updateResponse(aiResponse);
+                    speak(aiResponse, () => {
+                        isProcessing = false;
+                        updateStatus("AWAITING COMMAND");
+                    });
+                }
+            };
+            
+            recognition.onerror = (event) => {
+                console.error("Speech error:", event.error);
+                
+                if (event.error === 'not-allowed') {
+                    showPermissionError();
+                    updateStatus("PERMISSION DENIED", true);
+                    updateResponse("Microphone access required");
+                    micBtn.textContent = "ALLOW MICROPHONE";
+                    micBtn.classList.add('error');
+                    micBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    initialized = false;
+                    permissionRequested = false;
+                } else if (event.error === 'no-speech') {
+                    if (!isMicrophonePaused && isActive && !isProcessing && !isMusicPlaying) {
+                        setTimeout(() => {
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                console.error("Error restarting recognition:", e);
+                            }
+                        }, 100);
+                    }
+                } else {
+                    updateStatus("ERROR: " + event.error, true);
+                }
+                
+                container.classList.remove('voice-active');
             };
         }
-
-        // Event Listeners
+        
+        // Button event handlers
         micBtn.addEventListener('click', initializeSystem);
-        interruptBtn.addEventListener('click', interruptAll);
+        pauseBtn.addEventListener('click', toggleMicrophone);
         allowBtn.addEventListener('click', () => {
             hidePermissionPrompt();
             requestMicrophonePermission();
@@ -1237,39 +1360,77 @@
             hidePermissionPrompt();
             updateStatus("PERMISSION REQUIRED", true);
             updateResponse("Microphone access is required");
-            micBtn.querySelector('.btn-text').textContent = "ALLOW MICROPHONE";
+            micBtn.textContent = "ALLOW MICROPHONE";
             micBtn.classList.add('error');
             micBtn.disabled = false;
+            pauseBtn.disabled = true;
+            permissionRequested = false;
         });
-
+        
         closePlayer.addEventListener('click', hideSongPlayer);
-
-        // Initialize on DOM load
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                updateStatus("SYSTEM STANDBY");
-                
-                // Check speech support and update UI accordingly
-                if (!isSpeechSupported) {
-                    updateResponse("Voice commands not supported in this browser");
-                    micBtn.disabled = true;
-                    return;
-                }
-                
-                wakeHint.style.display = 'none';
-                
-                // Check for existing permission
-                if (localStorage.getItem('microphonePermission') === 'granted') {
-                    systemState.permissionGranted = true;
-                    updateResponse("Click button to initialize system");
+        
+        // Initialization
+        updateStatus("SYSTEM STANDBY");
+        updateResponse(isSpeechSupported ? "Click button to initialize system" : "Voice commands not supported");
+        wakeHint.style.display = 'none';
+        pauseBtn.disabled = true;
+        
+        // Load voices for speech synthesis
+        function loadVoices() {
+            return new Promise(resolve => {
+                const voices = synth.getVoices();
+                if (voices.length > 0) {
+                    resolve(voices);
                 } else {
-                    updateResponse("Microphone access required - click to allow");
+                    synth.onvoiceschanged = () => {
+                        resolve(synth.getVoices());
+                    };
                 }
-            } catch (error) {
-                console.error("Startup failed:", error);
-                updateStatus("STARTUP ERROR", true);
-                updateResponse("System initialization failed");
-                micBtn.disabled = true;
+            });
+        }
+        
+        if (isSpeechSupported) {
+            loadVoices().then(voices => {
+                console.log("Voices loaded:", voices);
+            });
+        }
+        
+        // Mobile responsiveness
+        function handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            container.style.width = isMobile ? "95vmin" : "80vmin";
+            container.style.height = isMobile ? "95vmin" : "80vmin";
+        }
+        
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initialize on load
+        
+        // Check if we already have permission (for page reloads)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isSpeechSupported) {
+                navigator.permissions && navigator.permissions.query({ name: 'microphone' })
+                    .then(permissionStatus => {
+                        if (permissionStatus.state === 'granted') {
+                            permissionGranted = true;
+                            initialized = true;
+                            micBtn.textContent = "SYSTEM READY";
+                            micBtn.classList.add('active');
+                            micBtn.disabled = true;
+                            pauseBtn.disabled = false;
+                            updateStatus("STANDBY");
+                            updateResponse("Say 'ACTIVATE' to begin");
+                            wakeHint.style.display = 'block';
+                            
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                console.error("Error starting recognition:", e);
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        // Permissions API not supported, continue normally
+                    });
             }
         });
     </script>
