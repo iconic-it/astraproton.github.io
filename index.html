@@ -334,6 +334,61 @@
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
         }
 
+        .interrupt-btn {
+            background: transparent;
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 20;
+            opacity: 0.9;
+            pointer-events: auto;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            outline: none;
+            text-shadow: 0 0 5px var(--error);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-align: center;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .interrupt-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(255, 27, 77, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .interrupt-btn:hover::before {
+            animation: buttonShine 1.5s infinite;
+            opacity: 1;
+        }
+
+        .interrupt-btn:hover {
+            opacity: 1;
+            background: rgba(255, 27, 77, 0.1);
+            box-shadow: 0 0 15px rgba(255, 27, 77, 0.3);
+            transform: scale(1.05);
+        }
+
         .response-display {
             width: 85%;
             min-height: 4em;
@@ -668,6 +723,11 @@
                 min-width: 220px;
             }
             
+            .interrupt-btn {
+                padding: 0.7rem 1.5rem;
+                min-width: 180px;
+            }
+            
             .permission-prompt {
                 width: 90%;
                 padding: 1rem;
@@ -716,6 +776,7 @@
                 </div>
                 <button class="mic-btn" id="mic-btn">INITIALIZE SYSTEM</button>
                 <button class="pause-btn" id="pause-btn">PAUSE MICROPHONE</button>
+                <button class="interrupt-btn" id="interrupt-btn">INTERRUPT</button>
             </div>
             
             <div class="permission-error" id="permission-error">
@@ -770,6 +831,7 @@
         const statusEl = document.getElementById('status');
         const micBtn = document.getElementById('mic-btn');
         const pauseBtn = document.getElementById('pause-btn');
+        const interruptBtn = document.getElementById('interrupt-btn');
         const permissionError = document.getElementById('permission-error');
         const wakeHint = document.getElementById('wake-hint');
         const permissionPrompt = document.getElementById('permission-prompt');
@@ -790,7 +852,7 @@
         
         // Song library
         const songs = [
-            { title: "Demons - Imagine Dragons", audio: "demons.mp3", image: "disc.png" },
+            { title: "Demons - Imagine Dragons", audio: "https://youtu.be/MA0aCUxItYA?si=L-hRKlxWCWW-Cegx", image: "disc.png" },
             { title: "I'm so tired - Troye Sivan", audio: "https://youtu.be/tDY2aBp3PO4?si=1g0M_QiD1o0rGjK9", image: "disc.png" },
             { title: "While we're young - Dillon Ensor", audio: "https://youtu.be/pi_lpyPVW3I?si=HWipfz4KxeO55wlI", image: "disc.png" },
             { title: "Discord - The Living Tombstone ", audio: "https://youtu.be/08ub3-OLidA?si=wWPHEEnJVDkmjwnv", image: "disc.png" },
@@ -849,6 +911,9 @@
                         albumArt.classList.add('spinning');
                     }, 300);
                     
+                    // Show interrupt button
+                    interruptBtn.style.display = 'block';
+                    
                     // Close player if open
                     songPlayer.style.display = 'none';
                 })
@@ -870,6 +935,7 @@
             currentSong = null;
             isMusicPlaying = false;
             container.classList.remove('music-playing');
+            interruptBtn.style.display = 'none';
             updateResponse("Playback complete");
         });
         
@@ -880,6 +946,7 @@
             responseEl.textContent = "Speech recognition not supported in your browser";
             micBtn.disabled = true;
             pauseBtn.disabled = true;
+            interruptBtn.disabled = true;
             micBtn.textContent = "UNSUPPORTED";
             micBtn.classList.add('error');
             updateStatus("BROWSER INCOMPATIBLE", true);
@@ -900,6 +967,7 @@
         const synth = window.speechSynthesis;
         let speechQueue = [];
         let isSpeaking = false;
+        let currentUtterance = null;
         
         // State
         let isActive = false;
@@ -968,10 +1036,10 @@
             
             isSpeaking = true;
             const { text, onEnd } = speechQueue.shift();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0;
-            utterance.pitch = 0.9;
-            utterance.volume = 1.0;
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.rate = 1.0;
+            currentUtterance.pitch = 0.9;
+            currentUtterance.volume = 1.0;
             
             // Find a suitable voice
             const voices = synth.getVoices();
@@ -982,13 +1050,14 @@
                     voice.name.toLowerCase().includes('man')
                 );
                 
-                utterance.voice = maleVoice || voices[0];
+                currentUtterance.voice = maleVoice || voices[0];
             }
             
             container.classList.add('voice-active');
-            utterance.onend = () => {
+            currentUtterance.onend = () => {
                 container.classList.remove('voice-active');
                 isSpeaking = false;
+                currentUtterance = null;
                 if (onEnd) onEnd();
                 processSpeechQueue();
                 
@@ -1003,15 +1072,16 @@
                 }
             };
             
-            utterance.onerror = (event) => {
+            currentUtterance.onerror = (event) => {
                 console.error("Speech synthesis error:", event);
                 container.classList.remove('voice-active');
                 isSpeaking = false;
+                currentUtterance = null;
                 if (onEnd) onEnd();
                 processSpeechQueue();
             };
             
-            synth.speak(utterance);
+            synth.speak(currentUtterance);
         }
         
         function speak(text, onEnd) {
@@ -1217,6 +1287,49 @@
             }
         }
         
+        function interruptCurrentAction() {
+            // Stop any ongoing speech
+            if (isSpeaking && currentUtterance) {
+                synth.cancel();
+                isSpeaking = false;
+                currentUtterance = null;
+                speechQueue = [];
+                container.classList.remove('voice-active');
+            }
+            
+            // Stop music if playing
+            if (isMusicPlaying) {
+                audioPlayer.pause();
+                albumArt.classList.remove('spinning');
+                albumArt.classList.remove('visible');
+                isMusicPlaying = false;
+                container.classList.remove('music-playing');
+                currentSong = null;
+            }
+            
+            // Stop any processing
+            if (isProcessing) {
+                isProcessing = false;
+            }
+            
+            // Hide interrupt button
+            interruptBtn.style.display = 'none';
+            
+            // Restart recognition if needed
+            if (isActive && !isMicrophonePaused) {
+                setTimeout(() => {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error("Error restarting recognition:", e);
+                    }
+                }, 100);
+            }
+            
+            updateResponse("Action interrupted");
+            updateStatus(isActive ? "AWAITING COMMAND" : "STANDBY");
+        }
+        
         // Event Handlers
         if (isSpeechSupported) {
             recognition.onstart = () => {
@@ -1288,32 +1401,17 @@
                         return;
                     }
                     
-                    if (transcript.includes("stop music") || transcript.includes("end music") || transcript.includes("pause music")) {
-                        if (!isMusicPlaying) {
-                            updateResponse("No music is currently playing");
-                            return;
-                        }
-                        audioPlayer.pause();
-                        albumArt.classList.remove('spinning');
-                        albumArt.classList.remove('visible');
-                        updateResponse("Music stopped");
-                        isMusicPlaying = false;
-                        container.classList.remove('music-playing');
-                        speak("Music stopped.");
-                        return;
-                    }
-                    
-                    if (isMusicPlaying) {
-                        // Ignore other commands while music is playing
-                        return;
-                    }
-                    
                     isProcessing = true;
+                    // Show interrupt button during processing
+                    interruptBtn.style.display = 'block';
+                    
                     const aiResponse = await queryAI(transcript);
                     updateResponse(aiResponse);
                     speak(aiResponse, () => {
                         isProcessing = false;
                         updateStatus("AWAITING COMMAND");
+                        // Hide interrupt button when done
+                        interruptBtn.style.display = 'none';
                     });
                 }
             };
@@ -1352,6 +1450,7 @@
         // Button event handlers
         micBtn.addEventListener('click', initializeSystem);
         pauseBtn.addEventListener('click', toggleMicrophone);
+        interruptBtn.addEventListener('click', interruptCurrentAction);
         allowBtn.addEventListener('click', () => {
             hidePermissionPrompt();
             requestMicrophonePermission();
@@ -1374,6 +1473,7 @@
         updateResponse(isSpeechSupported ? "Click button to initialize system" : "Voice commands not supported");
         wakeHint.style.display = 'none';
         pauseBtn.disabled = true;
+        interruptBtn.style.display = 'none';
         
         // Load voices for speech synthesis
         function loadVoices() {
