@@ -641,6 +641,118 @@
             cursor: pointer;
         }
 
+        /* Audio Visualizer */
+        .audio-visualizer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45%;
+            height: 45%;
+            border-radius: 50%;
+            z-index: 14;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .audio-visualizer.visible {
+            opacity: 0.7;
+        }
+
+        /* Boot Animation Elements */
+        .boot-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .boot-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        .boot-progress {
+            width: 70%;
+            height: 4px;
+            background: rgba(0, 247, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+
+        .boot-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s ease;
+        }
+
+        .boot-text {
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 1.5s forwards;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .boot-dots {
+            display: flex;
+            margin-top: 1rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 2s forwards;
+        }
+
+        .boot-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            margin: 0 5px;
+            animation: pulse-opacity 1.5s infinite;
+        }
+
+        .boot-dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .boot-dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* Typewriter cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: var(--accent);
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
         @keyframes rotate {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -684,6 +796,16 @@
         @keyframes spin {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         @media (max-width: 768px) {
@@ -741,11 +863,34 @@
             .album-art {
                 width: 40%;
             }
+            
+            .boot-logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .boot-text {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="cyber-grid"></div>
+    
+    <!-- Boot Animation -->
+    <div class="boot-animation" id="boot-animation">
+       <img src="1234.png" class="boot-logo" alt="ASTRA Logo">
+        <div class="boot-progress">
+            <div class="boot-progress-bar" id="boot-progress"></div>
+        </div>
+        <div class="boot-text" id="boot-text">INITIALIZING AI CORE</div>
+        <div class="boot-dots">
+            <div class="boot-dot"></div>
+            <div class="boot-dot"></div>
+            <div class="boot-dot"></div>
+        </div>
+    </div>
     
     <!-- Logo Container -->
     <div class="logo-container">
@@ -768,6 +913,7 @@
             
             <div class="hologram-core" id="core"></div>
             
+            <canvas class="audio-visualizer" id="audio-visualizer"></canvas>
             <img src="" class="album-art" id="album-art" alt="Album Art">
             
             <div class="controls-container">
@@ -841,14 +987,28 @@
         const songList = document.getElementById('song-list');
         const closePlayer = document.getElementById('close-player');
         const albumArt = document.getElementById('album-art');
+        const audioVisualizer = document.getElementById('audio-visualizer');
         const logoLeft = document.getElementById('logo-left');
         const logoRight = document.getElementById('logo-right');
+        const bootAnimation = document.getElementById('boot-animation');
+        const bootProgress = document.getElementById('boot-progress');
+        const bootText = document.getElementById('boot-text');
         
-        // Audio player
+        // Audio player and analyzer
         const audioPlayer = new Audio();
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let visualizerRunning = false;
         let currentSong = null;
         let isMusicPlaying = false;
         let isMicrophonePaused = false;
+        
+        // Typewriter effect variables
+        let typewriterQueue = [];
+        let isTyping = false;
+        let currentTypingTimeout;
+        let typewriterSpeed = 30; // ms per character
         
         // Song library
         const songs = [
@@ -862,6 +1022,212 @@
         // Set organization logos (replace with your actual logo URLs)
         logoLeft.src = "bafsk.png";
         logoRight.src = "iitc.png";
+        
+        // Response display function
+        function updateResponse(text) {
+            responseEl.textContent = text;
+            responseEl.style.borderColor = "var(--secondary)";
+            setTimeout(() => {
+                responseEl.style.borderColor = "var(--accent)";
+            }, 500);
+        }
+        
+        // 1. Microphone Access Looping Function
+        let permissionObserver;
+        function setupPermissionObserver() {
+            if (!navigator.permissions) return;
+            
+            permissionObserver = setInterval(() => {
+                if (!initialized) return;
+                
+                navigator.permissions.query({ name: 'microphone' }).then(permissionStatus => {
+                    if (permissionStatus.state === 'denied' && permissionGranted) {
+                        console.log("Microphone permission lost. Attempting to reacquire...");
+                        permissionGranted = false;
+                        initialized = false;
+                        updateStatus("PERMISSION LOST", true);
+                        updateResponse("Microphone access lost. Reinitializing...");
+						updateResponse("Microphone access lost. Reinitializing...");
+                        micBtn.textContent = "REINITIALIZE";
+                        micBtn.disabled = false;
+                        micBtn.classList.add('error');
+                        pauseBtn.disabled = true;
+                        
+                        // Try to reacquire permission
+                        setTimeout(initializeSystem, 2000);
+                    }
+                }).catch(() => {
+                    // Permissions API not supported in this context
+                    clearInterval(permissionObserver);
+                });
+            }, 5000); // Check every 5 seconds
+        }
+        
+        // 2. Audio Visualizer
+        function setupAudioAnalyzer() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                
+                const source = audioContext.createMediaElementSource(audioPlayer);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
+            
+            if (!visualizerRunning) {
+                visualizerRunning = true;
+                drawVisualizer();
+            }
+        }
+        
+        function drawVisualizer() {
+            if (!isMusicPlaying || !audioVisualizer || !analyser) {
+                visualizerRunning = false;
+                return;
+            }
+            
+            requestAnimationFrame(drawVisualizer);
+            
+            analyser.getByteFrequencyData(dataArray);
+            const canvas = audioVisualizer;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth * 2;
+            const height = canvas.height = canvas.offsetHeight * 2;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.4;
+            const barCount = 60;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw circular frequency bars
+            for (let i = 0; i < barCount; i++) {
+                const angle = (i / barCount) * Math.PI * 2;
+                const value = dataArray[Math.floor(i * dataArray.length / barCount)] / 255;
+                const barLength = value * radius * 0.5;
+                const barWidth = 2;
+                const x1 = centerX + Math.cos(angle) * radius;
+                const y1 = centerY + Math.sin(angle) * radius;
+                const x2 = centerX + Math.cos(angle) * (radius + barLength);
+                const y2 = centerY + Math.sin(angle) * (radius + barLength);
+                
+                // Create gradient for each bar
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                gradient.addColorStop(0, `rgba(0, 247, 255, ${0.2 + value * 0.8})`);
+                gradient.addColorStop(1, `rgba(119, 0, 255, ${0.2 + value * 0.8})`);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = barWidth;
+                ctx.strokeStyle = gradient;
+                ctx.stroke();
+            }
+            
+            // Draw pulsing center circle
+            const pulseValue = dataArray[0] / 255;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.2 * (0.7 + pulseValue * 0.3), 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(
+                centerX, centerY, 0,
+                centerX, centerY, radius * 0.2
+            );
+            gradient.addColorStop(0, `rgba(0, 255, 136, ${0.3 + pulseValue * 0.7})`);
+            gradient.addColorStop(1, 'rgba(0, 255, 136, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        }
+        
+        // 3. Boot-Up Initialization Animation
+        function runBootAnimation() {
+            // Hide main interface during boot
+            container.style.opacity = '0';
+            
+            // Simulate boot sequence
+            const bootMessages = [
+                "INITIALIZING AI CORE",
+                "LOADING NEURAL NETWORKS",
+                "CALIBRATING VOICE MODULE",
+                "ESTABLISHING SECURE LINK",
+                "SYSTEM READY"
+            ];
+            
+            let currentStep = 0;
+            const totalSteps = 100;
+            const bootInterval = setInterval(() => {
+                currentStep++;
+                const progress = Math.min(currentStep / totalSteps, 1);
+                bootProgress.style.width = `${progress * 100}%`;
+                
+                // Update boot text at certain intervals
+                if (currentStep === 20) bootText.textContent = bootMessages[1];
+                if (currentStep === 40) bootText.textContent = bootMessages[2];
+                if (currentStep === 60) bootText.textContent = bootMessages[3];
+                if (currentStep === 80) bootText.textContent = bootMessages[4];
+                
+                if (currentStep >= totalSteps) {
+                    clearInterval(bootInterval);
+                    setTimeout(() => {
+                        bootAnimation.style.opacity = '0';
+                        setTimeout(() => {
+                            bootAnimation.style.display = 'none';
+                            container.style.opacity = '1';
+                        }, 1000);
+                    }, 500);
+                }
+            }, 30);
+        }
+        
+        // 4. Typewriter Effect
+        function typewriterEffect(text, callback) {
+            if (!text) return;
+            
+            // Add to queue if already typing
+            if (isTyping) {
+                typewriterQueue.push({ text, callback });
+                return;
+            }
+            
+            isTyping = true;
+            let i = 0;
+            responseEl.innerHTML = ''; // Clear previous content
+            
+            function type() {
+                if (i < text.length) {
+                    // Add cursor during typing
+                    responseEl.innerHTML = text.substring(0, i) + '<span class="typewriter-cursor"></span>';
+                    i++;
+                    currentTypingTimeout = setTimeout(type, typewriterSpeed);
+                } else {
+                    // Done typing
+                    responseEl.innerHTML = text; // Remove cursor
+                    isTyping = false;
+                    if (callback) callback();
+                    
+                    // Process next in queue if any
+                    if (typewriterQueue.length > 0) {
+                        const next = typewriterQueue.shift();
+                        setTimeout(() => typewriterEffect(next.text, next.callback), 200);
+                    }
+                }
+            }
+            
+            type();
+        }
+        
+        // Override updateResponse to use typewriter effect
+        const originalUpdateResponse = updateResponse;
+        updateResponse = function(text) {
+            typewriterEffect(text);
+            // Still update the border color as before
+            responseEl.style.borderColor = "var(--secondary)";
+            setTimeout(() => {
+                responseEl.style.borderColor = "var(--accent)";
+            }, 500);
+        };
         
         // Populate song list
         function populateSongList() {
@@ -882,6 +1248,7 @@
                     audioPlayer.pause();
                     albumArt.classList.remove('spinning');
                     albumArt.classList.remove('visible');
+                    audioVisualizer.classList.remove('visible');
                     updateResponse(`Paused: ${song.title}`);
                     isMusicPlaying = false;
                     container.classList.remove('music-playing');
@@ -890,6 +1257,7 @@
                     audioPlayer.play();
                     albumArt.classList.add('visible');
                     albumArt.classList.add('spinning');
+                    audioVisualizer.classList.add('visible');
                     updateResponse(`Resumed: ${song.title}`);
                     isMusicPlaying = true;
                     container.classList.add('music-playing');
@@ -907,9 +1275,16 @@
                 .then(() => {
                     updateResponse(`Now playing: ${song.title}`);
                     albumArt.classList.add('visible');
+                    audioVisualizer.classList.add('visible');
                     setTimeout(() => {
                         albumArt.classList.add('spinning');
                     }, 300);
+                    
+                    // Setup audio analyzer
+                    if (audioContext && audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                    setupAudioAnalyzer();
                     
                     // Show interrupt button
                     interruptBtn.style.display = 'block';
@@ -923,12 +1298,14 @@
                     currentSong = null;
                     isMusicPlaying = false;
                     container.classList.remove('music-playing');
+                    audioVisualizer.classList.remove('visible');
                 });
         }
         
         // Handle song end
         audioPlayer.addEventListener('ended', () => {
             albumArt.classList.remove('spinning');
+            audioVisualizer.classList.remove('visible');
             setTimeout(() => {
                 albumArt.classList.remove('visible');
             }, 1000);
@@ -996,15 +1373,6 @@
             } else {
                 statusEl.style.animation = "none";
             }
-        }
-        
-        function updateResponse(text) {
-            responseEl.textContent = text;
-            // Add border highlight animation
-            responseEl.style.borderColor = "var(--secondary)";
-            setTimeout(() => {
-                responseEl.style.borderColor = "var(--accent)";
-            }, 500);
         }
         
         function showPermissionError() {
@@ -1210,6 +1578,9 @@
                     }
                     
                     container.classList.remove('voice-active');
+                    
+                    // Start permission observer now that we're initialized
+                    setupPermissionObserver();
                 })
                 .catch(error => {
                     console.error("Microphone permission error:", error);
@@ -1302,6 +1673,7 @@
                 audioPlayer.pause();
                 albumArt.classList.remove('spinning');
                 albumArt.classList.remove('visible');
+                audioVisualizer.classList.remove('visible');
                 isMusicPlaying = false;
                 container.classList.remove('music-playing');
                 currentSong = null;
@@ -1310,6 +1682,14 @@
             // Stop any processing
             if (isProcessing) {
                 isProcessing = false;
+            }
+            
+            // Clear any typing in progress
+            if (isTyping) {
+                clearTimeout(currentTypingTimeout);
+                isTyping = false;
+                typewriterQueue = [];
+                responseEl.innerHTML = responseEl.textContent; // Remove cursor
             }
             
             // Hide interrupt button
@@ -1475,6 +1855,9 @@
         pauseBtn.disabled = true;
         interruptBtn.style.display = 'none';
         
+        // Run boot animation on page load
+        runBootAnimation();
+        
         // Load voices for speech synthesis
         function loadVoices() {
             return new Promise(resolve => {
@@ -1526,6 +1909,9 @@
                             } catch (e) {
                                 console.error("Error starting recognition:", e);
                             }
+                            
+                            // Start permission observer
+                            setupPermissionObserver();
                         }
                     })
                     .catch(() => {
