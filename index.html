@@ -765,6 +765,106 @@
             text-shadow: 0 0 5px rgba(0, 247, 255, 0.5);
         }
 
+        /* Settings Panel */
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(10, 10, 18, 0.7);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        }
+
+        .settings-btn:hover {
+            background: rgba(0, 247, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .settings-panel {
+            position: fixed;
+            bottom: 70px;
+            left: 20px;
+            background: rgba(10, 10, 18, 0.9);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem;
+            width: 200px;
+            z-index: 99;
+            display: none;
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+        }
+
+        .settings-panel h4 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(119, 0, 255, 0.3);
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--primary);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+            background-color: white;
+        }
+
         @keyframes rotate {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -901,6 +1001,19 @@
             .boot-text {
                 font-size: 0.8rem;
             }
+            
+            .settings-btn {
+                width: 35px;
+                height: 35px;
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .settings-panel {
+                bottom: 60px;
+                left: 15px;
+                width: 180px;
+            }
         }
     </style>
 </head>
@@ -977,6 +1090,39 @@
         </div>
     </div>
 
+    <!-- Settings Button and Panel -->
+    <div class="settings-btn" id="settings-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+    </div>
+    
+    <div class="settings-panel" id="settings-panel">
+        <h4>ANIMATION SETTINGS</h4>
+        <div class="settings-option">
+            <span>Circle Animations</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-circles" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <span>Particle Effects</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-particles" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <span>Audio Visualizer</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-visualizer" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
     <script>
         // Groq API Configuration
         const GROQ_API_KEY = "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";
@@ -1022,6 +1168,11 @@
         const bootAnimation = document.getElementById('boot-animation');
         const bootProgress = document.getElementById('boot-progress');
         const bootText = document.getElementById('boot-text');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const toggleCircles = document.getElementById('toggle-circles');
+        const toggleParticles = document.getElementById('toggle-particles');
+        const toggleVisualizer = document.getElementById('toggle-visualizer');
         
         // Audio player and analyzer
         const audioPlayer = new Audio();
@@ -1042,6 +1193,13 @@
         // Data absorption animation variables
         let dataParticles = [];
         let particleInterval;
+        
+        // Animation settings
+        let animationsEnabled = {
+            circles: true,
+            particles: true,
+            visualizer: true
+        };
         
         // Song library
         const songs = [
@@ -1067,6 +1225,8 @@
         
         // Data absorption animation functions
         function createDataParticle() {
+            if (!animationsEnabled.particles) return;
+            
             const particle = document.createElement('div');
             particle.className = 'data-particle';
             
@@ -1106,6 +1266,8 @@
         }
         
         function startDataAbsorption() {
+            if (!animationsEnabled.particles) return;
+            
             // Create particles at regular intervals
             particleInterval = setInterval(() => {
                 if (isProcessing) {
@@ -1133,7 +1295,7 @@
                         initialized = false;
                         updateStatus("PERMISSION LOST", true);
                         updateResponse("Microphone access lost. Reinitializing...");
-                        micBtn.textContent = "INITIALIZE SYSTEM"; // Changed to always show initialize button
+                        micBtn.textContent = "INITIALIZE SYSTEM";
                         micBtn.disabled = false;
                         micBtn.classList.remove('active');
                         micBtn.classList.add('error');
@@ -1151,6 +1313,8 @@
         
         // 2. Audio Visualizer
         function setupAudioAnalyzer() {
+            if (!animationsEnabled.visualizer) return;
+            
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
@@ -1170,7 +1334,7 @@
         }
         
         function drawVisualizer() {
-            if (!isMusicPlaying || !audioVisualizer || !analyser) {
+            if (!isMusicPlaying || !audioVisualizer || !analyser || !animationsEnabled.visualizer) {
                 visualizerRunning = false;
                 return;
             }
@@ -1648,9 +1812,9 @@
                     permissionGranted = true;
                     initialized = true;
                     
-                    micBtn.textContent = "INITIALIZE SYSTEM"; // Changed to always show initialize button
+                    micBtn.textContent = "SYSTEM READY";
+                    micBtn.disabled = true;
                     micBtn.classList.remove('active');
-                    micBtn.disabled = false;
                     
                     updateStatus("STANDBY");
                     updateResponse("Say 'ACTIVATE' to begin");
@@ -1801,6 +1965,24 @@
             updateStatus(isActive ? "AWAITING COMMAND" : "STANDBY");
         }
         
+        // Toggle animation settings
+        function updateAnimationSettings() {
+            animationsEnabled.circles = toggleCircles.checked;
+            animationsEnabled.particles = toggleParticles.checked;
+            animationsEnabled.visualizer = toggleVisualizer.checked;
+            
+            // Apply changes to existing elements
+            const circles = document.querySelectorAll('.hologram-circle');
+            circles.forEach(circle => {
+                circle.style.animationPlayState = animationsEnabled.circles ? 'running' : 'paused';
+            });
+            
+            if (!animationsEnabled.visualizer && audioVisualizer) {
+                const ctx = audioVisualizer.getContext('2d');
+                ctx.clearRect(0, 0, audioVisualizer.width, audioVisualizer.height);
+            }
+        }
+        
         // Event Handlers
         if (isSpeechSupported) {
             recognition.onstart = () => {
@@ -1939,6 +2121,22 @@
         
         closePlayer.addEventListener('click', hideSongPlayer);
         
+        // Settings panel event handlers
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        toggleCircles.addEventListener('change', updateAnimationSettings);
+        toggleParticles.addEventListener('change', updateAnimationSettings);
+        toggleVisualizer.addEventListener('change', updateAnimationSettings);
+        
+        // Close settings panel when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!settingsPanel.contains(event.target) && event.target !== settingsBtn) {
+                settingsPanel.style.display = 'none';
+            }
+        });
+        
         // Initialization
         updateStatus("SYSTEM STANDBY");
         updateResponse(isSpeechSupported ? "Click button to initialize system" : "Voice commands not supported");
@@ -1987,9 +2185,9 @@
                         if (permissionStatus.state === 'granted') {
                             permissionGranted = true;
                             initialized = true;
-                            micBtn.textContent = "INITIALIZE SYSTEM"; // Changed to always show initialize button
+                            micBtn.textContent = "SYSTEM READY";
+                            micBtn.disabled = true;
                             micBtn.classList.remove('active');
-                            micBtn.disabled = false;
                             pauseBtn.disabled = false;
                             updateStatus("STANDBY");
                             updateResponse("Say 'ACTIVATE' to begin");
