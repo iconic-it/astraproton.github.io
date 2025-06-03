@@ -576,6 +576,7 @@
 
         .song-player h3 {
             margin-top: 0;
+            margin-bottom: 1rem;
             color: var(--primary);
             text-align: center;
             text-shadow: 0 0 10px var(--primary);
@@ -769,7 +770,7 @@
         .settings-btn {
             position: fixed;
             bottom: 20px;
-            left: 20px;
+            right: 20px;
             background: rgba(10, 10, 18, 0.7);
             border: 1px solid var(--primary);
             color: var(--primary);
@@ -793,7 +794,7 @@
         .settings-panel {
             position: fixed;
             bottom: 70px;
-            left: 20px;
+            right: 20px;
             background: rgba(10, 10, 18, 0.9);
             border: 1px solid var(--primary);
             border-radius: 10px;
@@ -1006,12 +1007,12 @@
                 width: 35px;
                 height: 35px;
                 bottom: 15px;
-                left: 15px;
+                right: 15px;
             }
             
             .settings-panel {
                 bottom: 60px;
-                left: 15px;
+                right: 15px;
                 width: 180px;
             }
         }
@@ -1101,14 +1102,14 @@
     <div class="settings-panel" id="settings-panel">
         <h4>ANIMATION SETTINGS</h4>
         <div class="settings-option">
-            <span>Circle Animations</span>
+            <span>Hologram Circles</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggle-circles" checked>
                 <span class="toggle-slider"></span>
             </label>
         </div>
         <div class="settings-option">
-            <span>Particle Effects</span>
+            <span>Data Particles</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggle-particles" checked>
                 <span class="toggle-slider"></span>
@@ -1118,6 +1119,13 @@
             <span>Audio Visualizer</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggle-visualizer" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        <div class="settings-option">
+            <span>Button Effects</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-buttons" checked>
                 <span class="toggle-slider"></span>
             </label>
         </div>
@@ -1173,6 +1181,7 @@
         const toggleCircles = document.getElementById('toggle-circles');
         const toggleParticles = document.getElementById('toggle-particles');
         const toggleVisualizer = document.getElementById('toggle-visualizer');
+        const toggleButtons = document.getElementById('toggle-buttons');
         
         // Audio player and analyzer
         const audioPlayer = new Audio();
@@ -1198,7 +1207,8 @@
         let animationsEnabled = {
             circles: true,
             particles: true,
-            visualizer: true
+            visualizer: true,
+            buttons: true
         };
         
         // Song library
@@ -1425,6 +1435,8 @@
                         setTimeout(() => {
                             bootAnimation.style.display = 'none';
                             container.style.opacity = '1';
+                            // Show settings button after boot
+                            settingsBtn.style.display = 'flex';
                         }, 1000);
                     }, 500);
                 }
@@ -1970,6 +1982,7 @@
             animationsEnabled.circles = toggleCircles.checked;
             animationsEnabled.particles = toggleParticles.checked;
             animationsEnabled.visualizer = toggleVisualizer.checked;
+            animationsEnabled.buttons = toggleButtons.checked;
             
             // Apply changes to existing elements
             const circles = document.querySelectorAll('.hologram-circle');
@@ -1981,6 +1994,17 @@
                 const ctx = audioVisualizer.getContext('2d');
                 ctx.clearRect(0, 0, audioVisualizer.width, audioVisualizer.height);
             }
+            
+            // Toggle button effects
+            const buttons = document.querySelectorAll('.mic-btn, .pause-btn, .interrupt-btn, .permission-btn');
+            buttons.forEach(button => {
+                if (animationsEnabled.buttons) {
+                    button.style.pointerEvents = 'auto';
+                } else {
+                    button.style.pointerEvents = 'none';
+                    button.style.transform = 'none';
+                }
+            });
         }
         
         // Event Handlers
@@ -2129,6 +2153,7 @@
         toggleCircles.addEventListener('change', updateAnimationSettings);
         toggleParticles.addEventListener('change', updateAnimationSettings);
         toggleVisualizer.addEventListener('change', updateAnimationSettings);
+        toggleButtons.addEventListener('change', updateAnimationSettings);
         
         // Close settings panel when clicking outside
         document.addEventListener('click', (event) => {
@@ -2143,6 +2168,7 @@
         wakeHint.style.display = 'none';
         pauseBtn.disabled = true;
         interruptBtn.style.display = 'none';
+        settingsBtn.style.display = 'none'; // Hide initially
         
         // Run boot animation on page load
         runBootAnimation();
