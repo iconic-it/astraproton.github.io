@@ -1101,6 +1101,14 @@
         }
 
 
+        #mode-panel {
+            position: absolute; /* or fixed, depending on your layout */
+            z-index: 9999;      /* make sure it's above other elements */
+            background-color: #1a1a1a; /* optional for visibility */
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
 
 
         .text-mode-container.active {
@@ -1614,7 +1622,9 @@
         let currentSong = null;
         let isMusicPlaying = false;
         let isMicrophonePaused = false;
-        
+        let initialized = false;
+        let permissionGranted = false;
+
         // Typewriter effect variables
         let typewriterQueue = [];
         let isTyping = false;
@@ -2163,8 +2173,6 @@
         let isProcessing = false;
         const wakeWord = "activate";
         const standbyWord = "deactivate";
-        let permissionGranted = false;
-        let initialized = false;
         let permissionRequested = false;
         
         // Functions
@@ -3060,7 +3068,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Do not auto-initialize system even if permission exists
             updateStatus("SYSTEM STANDBY");
-            updateResponse(isSpeechSupported ? "Click button to initialize system" : "Voice commands not supported");
+            updateResponse(isSpeechSupported 
+                ? "Click button to initialize system" 
+                : "Voice commands are unavailable in this browser. Please enable Text Mode to continue using ASTRA."
+            );
+
         });
         
 		window.addEventListener("load", () => {
