@@ -16,7 +16,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
-    <style>
+	<body> 
+	<button onclick="loginWithGoogle()">Login with Google</button>
+	
+	
+	</body>
+    
+	<style>
+		  button {
+		    padding: 10px 20px;
+		    background-color: #4285F4;
+		    color: white;
+		    font-size: 16px;
+		    border: none;
+		    border-radius: 4px;
+		    cursor: pointer;
+		  }
+		
+		  button:hover {
+		    background-color: #357AE8;
+		  }
+
+
         :root {
             --primary: #00f7ff;
             --secondary: #7700ff;
@@ -3090,5 +3111,26 @@
         });
 
     </script>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script>
+  const supabase = supabase.createClient(
+    'https://eehtetwdvazzufunmrxb.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlaHRldHdkdmF6enVmdW5tcnhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMzE4NzgsImV4cCI6MjA3MjcwNzg3OH0.p44klTLD_nfbX6BloJ7YrPNrHvnAvFBbK41naveFeIQ'
+  );
+
+
+    // Google OAuth login function
+    async function loginWithGoogle() {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) {
+        console.error('Login error:', error.message);
+      }
+    }
+
+</script>
+
 </body>
 </html>
